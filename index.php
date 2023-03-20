@@ -42,8 +42,10 @@ $movies = $statement->fetchAll();
             <h1><a href = "index.php">Movies CMS</a></h1>
             <nav>
                 <ul>
-                    <li class="first"><a href="index.php">Home</a></li>
-                    <li class="second"><a href="post.php">New Post</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="post.php">New Post</a></li>
+                    <li><a href="login.php">Login</a></li>
+                    <li><a href="registration.php">Register</a></li>
                 </ul>
             </nav>
              
