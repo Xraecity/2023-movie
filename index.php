@@ -4,14 +4,14 @@
     
     Name: Maryam Ayemlo Gambo
     Date: March 20, 2023
-    Description: This is the main page that displays all the movies posted
+    Description: This page displays all the movies added to the website.
 
 ****************/
 
 require('connect.php');
 
 //select query
-$query = "SELECT * FROM blogs ORDER BY date DESC";
+$query = "SELECT * FROM movies ORDER BY Name ASC";
 
 // A PDO::Statement is prepared from the query.
 $statement = $db->prepare($query);
@@ -21,30 +21,8 @@ $statement->execute();
 
 
 //fetch all blogs and store in array
-$blogsContents = $statement->fetchAll();
+$movies = $statement->fetchAll();
 
-
-//function to truncate blog comment greater than 200 words
-function truncate($text) {
-    $text = substr($text,0,200);
-    return $text;
-}
-
-
-// get and display full blog post
-if(isset($_GET['id'])){
-    // Sanitize the id. Like above but this time from INPUT_GET.
-    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-
-    // Build the parametrized SQL query using the filtered id.
-    $query = "SELECT * FROM blogs WHERE id = :id";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':id', $id, PDO::PARAM_INT);
-            
-    // Execute the SELECT and fetch the single row returned.
-    $statement->execute();
-    $fullBlog = $statement->fetch();
-}
 
 ?>
 
@@ -56,12 +34,12 @@ if(isset($_GET['id'])){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="main.css">
-    <title>Welcome to my Blog!</title>
+    <title>Welcome to my Movies CMS</title>
 </head>
 <body>
     <!-- Remember that alternative syntax is good and html inside php is bad -->
     <div class="block">
-            <h1><a href = "index.php">Cats Who Code</a></h1>
+            <h1><a href = "index.php">Movies CMS</a></h1>
             <nav>
                 <ul>
                     <li class="first"><a href="index.php">Home</a></li>
@@ -69,27 +47,20 @@ if(isset($_GET['id'])){
                 </ul>
             </nav>
              
-            <?php if($_GET):?>
-                <h3><?= $fullBlog['title'] ?></h3>
-                <p class="date"><?= date("F d, Y, h:i a", strtotime($fullBlog['date']))?> - <a class="edit" href="edit.php?id=<?= $fullBlog['id']?>">Edit</a></p>
-                <p class="content"><?= $fullBlog['content'] ?></p>
 
-            
-            <?php else: ?>
-                <h3>Recently Posted Blogs</h3>
+                <?php foreach($movies as $movie): ?>
+                     <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
+                    <p class="date"><?= date("F d, Y, h:i a", strtotime($movie['Date_Created']))?> - <a class="edit" href="update.php?id=<?= $movie['Id']?>">Edit</a></p>
 
-                <?php foreach($blogsContents as $blog): ?>
-                     <h3><a href="index.php?id=<?= $blog['id']?>"><?= $blog['title'] ?></a></h3>
-                    <p class="date"><?= date("F d, Y, h:i a", strtotime($blog['date']))?> - <a class="edit" href="edit.php?id=<?= $blog['id']?>">Edit</a></p>
-                    <?php if(strlen($blog['content']) > 200): ?>
-                    <p class="content"><?= truncate($blog['content'])?> <a class="fullblog" href="index.php?id=<?= $blog['id']?>">...Read more</a></p>
-                    <?php else: ?>
-                    <p class="content"><?=$blog['content']?></p>
-                    <?php endif ?>
+                    <h4><?=$movie['Genre']?></h4>
+                    <p><?=$movie['Release Date']?></p>
+                    
+                    <p class="content"><?=$movie['Description']?></p>
+                    <img src="Image_Uploads/<?=$movie['images']?>" alt="avengers-image">
+                    
                     
                 <?php endforeach ?>
-            <?php endif ?>
-
+          
     
     </div>
     
