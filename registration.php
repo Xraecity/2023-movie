@@ -73,7 +73,7 @@ if($_POST){
 
         if(isset($_POST['password2'])){  
             if($_POST['password1'] != $_POST['password2']){
-                $passwordError2 = "Passwords do not match";
+                $passwordError2 = "Passwords do not match. Please try again";
                 $samePasswordCheck =  false;
              }
         }
@@ -137,7 +137,7 @@ if($_POST){
         <?php endif ?>
 
         <label for="password1">Password</label><br>
-        <input id="password1" name="password1" type="text"><br>
+        <input id="password1" name="password1" type="password"><br>
 
         <!-- if password field has error,display error message--> 
         <?php if(isset($passwordError1)): ?>
@@ -145,7 +145,7 @@ if($_POST){
         <?php endif ?>
 
         <label for="password2">Re-enter Password</label><br>
-        <input id="password2" name="password2" type="text"><br>
+        <input id="password2" name="password2" type="password"><br>
 
         <!-- if password field has error,display error message--> 
         <?php if(isset($passwordError2)): ?>
