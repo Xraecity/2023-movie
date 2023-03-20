@@ -13,67 +13,77 @@ require('connect.php');
 // error variable for input fields
 $usernameError;
 $emailError;
-$passwordError ;
+$passwordError1;
+$passwordError2;
 
 //variables to store input fields values
 $email;
-$password;
+$password1;
+$password2;
 $username;
+
+//boolean variables to check passwords
+$emailValid = false;
+$usernameValid = false;
+$passwordValid = false;
+$samePasswordCheck = false;
+
 
 
 if($_POST){
 	print_r($_POST);
-
-	function validateEmail(){
 		if(isset($_POST['email'])){
             if(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) === false){
                 $emailError = "Email is invalid";
-                return false;
             }
             else{
 				$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-				return true;
+				$emailValid = true;
+				
             }
         }
         else{
             $emailError = "Email is required";
-            return false;
         }
-	}
 
 
-	function validateUsername(){
 		if(empty($_POST['username']))
             {
                 $usernameError = "Username is required";
-                return false;
             }
         else{
         	$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        	return true;
+        	$usernameValid =  true;
         }
 
-	}
 
-	function validatePassword(){
-		if(isset($_POST['password'])){
-			$regex ='/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/';
-            if(!preg_match($regex, $_POST['password'])){
-                $passwordError = "Password is Invalid";
-                return false;
+		if(isset($_POST['password1'])){
+			$regex ='/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,}$/';
+            if(!preg_match($regex, $_POST['password1'])){
+                $passwordError1 = "Password is Invalid";
              }
              else{
-             	$password = $_POST['password'];
-             	return true;
+             	$password1 = $_POST['password1'];
+             	$passwordValid =  true;
              }
         }
         else{
-            $passwordError = "Password is required";
-            return false;
+            $passwordError1 = "Password is required";
+        }
 
+        if(isset($_POST['password2'])){  
+            if($_POST['password1'] != $_POST['password2']){
+                $passwordError2 = "Passwords do not match";
+             }
+             else{
+             	$samePasswordCheck =  true;
+             }
+        }
+        else{
+            $passwordError2 = "Please re-enter your password";
         }
 	}
-}
+
 ?>
 
 
@@ -90,26 +100,37 @@ if($_POST){
 		<label for="email">Email</label><br>
         <input id="email" name="email" type="email"><br><br>
 
+
         <!-- if email field has error,display error message--> 
         <?php if(isset($emailError)): ?>
             <span class="error"><?= $emailError ?></span><br>
         <?php endif ?>
 
         <label for="username">Username</label><br>
-        <input id="username" name="username" type="text"><br><br>
+        <input id="username" name="username" type="text"><br>
 
         <!-- if username field has error,display error message--> 
         <?php if(isset($usernameError)): ?>
             <span class="error"><?= $usernameError ?></span><br>
         <?php endif ?>
 
-        <label for="password">Password</label><br>
-        <input id="password" name="password" type="text"><br><br>
+        <label for="password1">Password</label><br>
+        <input id="password1" name="password1" type="text"><br>
 
         <!-- if password field has error,display error message--> 
-        <?php if(isset($passwordError)): ?>
-        <span class="error"><?= $passwordError ?></span><br>
+        <?php if(isset($passwordError1)): ?>
+        <span class="error"><?= $passwordError1 ?></span><br>
         <?php endif ?>
+
+        <label for="password2">Re-enter Password</label><br>
+        <input id="password2" name="password2" type="text"><br>
+
+        <!-- if password field has error,display error message--> 
+        <?php if(isset($passwordError2)): ?>
+        <span class="error"><?= $passwordError2 ?></span><br>
+        <?php endif ?>
+
+        <div>Password must contain one digit from 1 to 9, one lowercase letter, one uppercase letter, one special character, no space, and it must be a minimum of 8 characters long.</div>
 
 		<button type="submit" value="Register" id="register">Register</button>	
 	</form>
