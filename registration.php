@@ -156,6 +156,7 @@ if($_POST){
 
 		<button type="submit" value="Register" id="register">Register</button>	
 	</form>
+	<p>Already having an account?<a href="login.php">  Login Here!</a></p>
 
 
 
