@@ -11,8 +11,7 @@ session_start();
 
 
 $emptyfieldError;
-$invalidUsername;
-$invalidPassword;
+$loginError;
 $successMessage;
 
 if($_POST){
@@ -45,17 +44,17 @@ if($_POST){
 				$_SESSION['name'] = $_POST['username'];
 				$_SESSION['id'] = $userDetails['ID'];
 				$successMessage =  'Login successful. Welcome ' . $_SESSION['name'] . '!';
-				 header("	Location: pageAdministration.php");
+				 header("Refresh:3 url= pageAdministration.php");
 		       } 
 
 		    else {
 				// Incorrect password
-				$invalidPassword =  'Incorrect password!';
+				$loginError =  'Login Failed. Incorrect password!';
 		}
 	    }
 	    else {
 			// Incorrect username
-			$invalidUsername = "Incorrect username and/or password!";
+			$loginError = " Login Failed.Incorrect username and/or password!";
 	    }
 
 
@@ -82,12 +81,8 @@ if($_POST){
         <label for="password">Password</label><br>
         <input id="password" name="password" type="password" placeholder="password"><br><br>
 
-        <?php if(isset($invalidUsername)):?>
-        	<span class="error"><?= $invalidUsername?></span><br>
-        <?php endif ?>
-
-        <?php if(isset($invalidPassword)):?>
-        	<span class="error"><?= $invalidPassword?></span><br>
+        <?php if(isset($loginError)):?>
+        	<span class="error"><?= $loginError?></span><br>
         <?php endif ?>
 
         <?php if(isset($emptyfieldError)):?>
@@ -101,6 +96,7 @@ if($_POST){
     <?php endif ?>
 
 
+	<p>Don't have an Account?<a href="registration.php">Create Account</a></p>
 
 
 
