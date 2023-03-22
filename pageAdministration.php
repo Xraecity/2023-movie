@@ -43,7 +43,7 @@ $movies = $movieStatement->fetchAll();
 
 //fetch data from users table
 //select query
-$userQuery = "SELECT * FROM users ORDER BY Username ASC";
+$userQuery = "SELECT * FROM users ORDER BY ID ASC";
 
 // A PDO::Statement is prepared from the query.
 $userStatement = $db->prepare($userQuery);
@@ -86,8 +86,8 @@ $users = $userStatement->fetchAll();
     <ul>
     	<?php foreach($movies as $movie): ?>
     		<li><?= $movie['Name']?>
-    			<button><a = href="pageUpdate.php">Update</a></button>
-    			<button><a = href="pageDelete.php">Delete</a></button>
+    			<button><a = href="pageUpdate.php?id=<?= $movie['Id']?>">Update</a></button>
+    			<button onclick="return confirm('Are you sure you want to delete?')"><a = href="pageDelete.php?id=<?= $movie['Id']?>">Delete</a></button>
     		</li>
     	<?php endforeach ?>
 
@@ -116,8 +116,8 @@ $users = $userStatement->fetchAll();
     			 <?php endif ?>
     			</p>
 
-    			<button><a href="updateUser.php">Update</a></button>
-    			<button><a href="deleteUser.php">Delete</a></button>
+    			<button><a href="updateUser.php?id=<?= $user['ID']?>">Update</a></button>
+    			<button onclick="return confirm('Are you sure you want to delete?')"><a href="deleteUser.php?id=<?= $user['ID']?>">Delete</a></button>
     			
     		</li>
     	<?php endforeach ?>
