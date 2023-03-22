@@ -9,7 +9,6 @@
 
 session_start();
 
-
 $emptyfieldError;
 $loginError;
 $successMessage;
@@ -34,17 +33,16 @@ if($_POST){
 	    // Execution on the DB server is delayed until we execute().
 	    $statement->execute(); 
 	    $userDetails = $statement->fetch();
-	    print_r ($userDetails);
 
 	    if(!empty($userDetails)){
 	        if (password_verify($_POST['password'], $userDetails['Password'])){
 				// Verification success! User has logged-in!
 				// Create sessions, so we know the user is logged in.
-				$_SESSION['name'] = $_POST['username'];
+				$_SESSION['username'] = $_POST['username'];
 				$_SESSION['id'] = $userDetails['ID'];
 				$_SESSION['isAdmin'] = $userDetails['Is_Admin'];
 				$successMessage =  'Login successful!';
-				header("Refresh:3 url= pageAdministration.php");
+				header("Refresh:5; url=pageAdministration.php");
 		       } 
 
 		    else {
@@ -74,6 +72,15 @@ if($_POST){
 
 <body>
 	<h1>Login</h1>
+	<div>
+		 <?php if(isset($loginError)):?>
+        	<span class="error"><?= $loginError?></span><br>
+        <?php endif ?>
+
+        <?php if(isset($emptyfieldError)):?>
+        	<span class="error"><?= $emptyfieldError?></span><br>
+        <?php endif ?>
+	</div>
 	<form method="post" action="login.php">
 		<label for="username">Username</label><br>
         <input id="username" name="username" type="text"><br><br>
@@ -81,13 +88,7 @@ if($_POST){
         <label for="password">Password</label><br>
         <input id="password" name="password" type="password" placeholder="password"><br><br>
 
-        <?php if(isset($loginError)):?>
-        	<span class="error"><?= $loginError?></span><br>
-        <?php endif ?>
-
-        <?php if(isset($emptyfieldError)):?>
-        	<span class="error"><?= $emptyfieldError?></span><br>
-        <?php endif ?>
+       
 
 		<button type="submit" value="Login" id="login">	Login</button>
 	</form>
