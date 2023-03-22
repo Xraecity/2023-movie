@@ -4,7 +4,7 @@
     
     Name: Maryam Ayemlo Gambo
     Date: March 21, 2023
-    Description: this page allows admin and logged in users to edit a movies poage(validates and sanitizes input fields) and updates it in the database.
+    Description: this page allows admin users to delete a user from the database.
 
 ****************/
 require('connect.php');

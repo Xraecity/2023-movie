@@ -40,10 +40,10 @@ if($_POST){
 				$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);		
             }
         }
-        else{
-            $emailError = "Email is required";
-            $emailValid = false;
-        }
+    else{
+        $emailError = "Email is required";
+        $emailValid = false;
+    }
 
 
 		if(empty($_POST['username']))
