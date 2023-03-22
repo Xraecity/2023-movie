@@ -40,11 +40,11 @@ if($_POST){
 	        if (password_verify($_POST['password'], $userDetails['Password'])){
 				// Verification success! User has logged-in!
 				// Create sessions, so we know the user is logged in.
-				$_SESSION['loggedin'] = TRUE;
 				$_SESSION['name'] = $_POST['username'];
 				$_SESSION['id'] = $userDetails['ID'];
-				$successMessage =  'Login successful. Welcome ' . $_SESSION['name'] . '!';
-				 header("Refresh:3 url= pageAdministration.php");
+				$_SESSION['isAdmin'] = $userDetails['Is_Admin'];
+				$successMessage =  'Login successful!';
+				header("Refresh:3 url= pageAdministration.php");
 		       } 
 
 		    else {
