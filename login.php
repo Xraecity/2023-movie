@@ -42,7 +42,7 @@ if($_POST){
 				$_SESSION['id'] = $userDetails['ID'];
 				$_SESSION['isAdmin'] = $userDetails['Is_Admin'];
 				$successMessage =  'Login successful!';
-				header("Refresh:5; url=pageAdministration.php");
+				header("Refresh:3; url=pageAdministration.php");
 		       } 
 
 		    else {
@@ -80,6 +80,10 @@ if($_POST){
         <?php if(isset($emptyfieldError)):?>
         	<span class="error"><?= $emptyfieldError?></span><br>
         <?php endif ?>
+
+        <?php if(isset($successMessage)):?>
+        	<h3><?= $successMessage ?></h3>
+        <?php endif ?>
 	</div>
 	<form method="post" action="login.php">
 		<label for="username">Username</label><br>
@@ -92,9 +96,7 @@ if($_POST){
 
 		<button type="submit" value="Login" id="login">	Login</button>
 	</form>
-	<?php if(isset($successMessage)):?>
-        	<h3><?= $successMessage ?></h3>
-    <?php endif ?>
+	
 
 
 	<p>Don't have an Account?<a href="registration.php">Create Account</a></p>
