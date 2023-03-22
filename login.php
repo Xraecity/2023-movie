@@ -8,27 +8,32 @@
 ****************/
 
 session_start();
+require('connect.php');
 
 $emptyfieldError;
 $loginError;
 $successMessage;
 
 if($_POST){
-	if ( empty($_POST['username']) || empty( $_POST['password'])) {
+	if ( empty($_POST['email']) || empty( $_POST['password'])) {
 		// Could not get the data that should have been sent.
 		$emptyfieldError = 'Fields cannot be empty. Please fill both the username and password fields!';
 	}
 	else{  
-	    require('connect.php');
-		//sanitize username field and store in a variable
-		$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+	        if(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) === false){
+	            $loginError = "Email is invalid";
+	        }
+        else{
+	    	$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);		
+          }
+        }
 
 		//select query
-	    $query = "SELECT ID,Password,Is_Admin FROM users WHERE Username = :username";
+	    $query = "SELECT ID,Password,Is_Admin FROM users WHERE Email = :email";
 
 	    // A PDO::Statement is prepared from the query.
 	    $statement = $db->prepare($query);
-	    $statement->bindValue(':username', $username);
+	    $statement->bindValue(':email', $email);
 
 	    // Execution on the DB server is delayed until we execute().
 	    $statement->execute(); 
@@ -38,7 +43,7 @@ if($_POST){
 	        if (password_verify($_POST['password'], $userDetails['Password'])){
 				// Verification success! User has logged-in!
 				// Create sessions, so we know the user is logged in.
-				$_SESSION['username'] = $_POST['username'];
+				$_SESSION['email'] = $_POST['email'];
 				$_SESSION['id'] = $userDetails['ID'];
 				$_SESSION['isAdmin'] = $userDetails['Is_Admin'];
 				$successMessage =  'Login successful!';
@@ -51,14 +56,14 @@ if($_POST){
 		}
 	    }
 	    else {
-			// Incorrect username
-			$loginError = " Login Failed.Incorrect username and/or password!";
+			// Incorrect email
+			$loginError = " Login Failed.Incorrect email and/or password!";
 	    }
 
 
 		
 	}
-}
+
 ?>
 
 
@@ -86,8 +91,8 @@ if($_POST){
         <?php endif ?>
 	</div>
 	<form method="post" action="login.php">
-		<label for="username">Username</label><br>
-        <input id="username" name="username" type="text"><br><br>
+		<label for="email">Email</label><br>
+        <input id="email" name="email" type="email"><br><br>
        
         <label for="password">Password</label><br>
         <input id="password" name="password" type="password" placeholder="password"><br><br>

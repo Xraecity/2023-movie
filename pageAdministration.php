@@ -76,7 +76,7 @@ $users = $userStatement->fetchAll();
 	</div>
 
 	<div>
-		<h3>Welcome <?= $_SESSION['username']?></h3>
+		<h3>Welcome <?= $_SESSION['email']?></h3>
 		<button><a href="pageCreate.php">Add Movie</a></button>
 	</div>
 	
@@ -105,9 +105,8 @@ $users = $userStatement->fetchAll();
     	<?php foreach($users as $user): ?>
     		<li>
     			<p>User_ID:  <?=$user['ID']?></p>
-    			<p>Username: <?= $user['Username']?></p>
-    			<p>Password: <?= $user['Password']?></p>
     			<p>Email: <?= $user['Email']?></p>
+    			<p>Password: <?= $user['Password']?></p>
     			<p>Is_Admin: 
     			 <?php if($user['Is_Admin'] == 1):?>
     			 	Yes

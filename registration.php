@@ -11,22 +11,45 @@ require('connect.php');
 
 
 // error variable for input fields
-$usernameError;
 $emailError;
 $passwordError1;
 $passwordError2;
+
+//variable to save used email address from users table
+$emailArray = [];
 
 //variables to store input fields values
 $email;
 $password1;
 $password2;
-$username;
 
 //boolean variables to check if field input are valid
 $emailValid = true;
-$usernameValid = true;
 $passwordValid = true;
 $samePasswordCheck = true;
+
+
+//select query to retrieve all database email addresses
+$query = "SELECT * FROM users ";
+
+
+// A PDO::Statement is prepared from the query.
+$statement = $db->prepare($query);
+
+// Execution on the DB server is delayed until we execute().
+$statement->execute(); 
+
+
+//fetch all blogs and store in array
+$users = $statement->fetchAll();
+
+//add user emails to email array
+foreach($users as $user){
+    array_push($emailArray, $user['Email']);
+}
+
+
+print_r($emailArray);
 
 
 
@@ -36,24 +59,18 @@ if($_POST){
             $emailError = "Email is invalid";
             $emailValid = false;
         }
-            else{
-				$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);		
+        elseif(in_array($_POST['email'], $emailArray) === true){
+            $emailError = "Email is used already. Please enter another email";
+            $emailValid = false;
+        }
+        else{
+	    	$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
             }
         }
     else{
         $emailError = "Email is required";
         $emailValid = false;
     }
-
-
-		if(empty($_POST['username']))
-            {
-                $usernameError = "Username is required";
-                $usernameValid =  false;
-            }
-        else{
-        	$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        }
 
 
 		if(isset($_POST['password1'])){
@@ -82,23 +99,22 @@ if($_POST){
             $samePasswordCheck =  false;
         }
 
-	if($emailValid && $usernameValid && $passwordValid && $samePasswordCheck){
+	if($emailValid && $passwordValid && $samePasswordCheck){
 		$hash_password_salt = password_hash($password1,
         PASSWORD_DEFAULT, array('cost' => 9));
 
         //  Build the parameterized SQL query and bind to the above sanitized values.
-            $query = "INSERT INTO users (Username, Password,email,Is_Admin) VALUES (:username,:password,:email,:Is_Admin)";
-            $statement = $db->prepare($query);
+            $insertQuery = "INSERT INTO users (Password,Email,Is_Admin) VALUES (:password,:email,:Is_Admin)";
+            $insertStatement = $db->prepare($insertQuery);
 
 
             //  Bind values to the parameters
-            $statement->bindValue(':username', $username);
-            $statement->bindValue(':email', $email);
-            $statement->bindValue(':password', $hash_password_salt);
-            $statement->bindValue(':Is_Admin', 0);
+            $insertStatement->bindValue(':email', $email);
+            $insertStatement->bindValue(':password', $hash_password_salt);
+            $insertStatement->bindValue(':Is_Admin', 0);
 
             //  Execute the INSERT.
-            $statement->execute();
+            $insertStatement->execute();
 
             //redirect to home page
             header("Location: index.php");
@@ -128,13 +144,6 @@ if($_POST){
             <span class="error"><?= $emailError ?></span><br>
         <?php endif ?>
 
-        <label for="username">Username</label><br>
-        <input id="username" name="username" type="text"><br>
-
-        <!-- if username field has error,display error message--> 
-        <?php if(isset($usernameError)): ?>
-            <span class="error"><?= $usernameError ?></span><br>
-        <?php endif ?>
 
         <label for="password1">Password</label><br>
         <input id="password1" name="password1" type="password"><br>
