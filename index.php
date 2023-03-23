@@ -11,6 +11,10 @@
 require('connect.php');
 session_start();
 
+//variable to store errors for comment form
+$inputError;
+$moviepage = [];
+
 //select query
 $query = "SELECT * FROM movies ORDER BY Name ASC";
 
@@ -39,7 +43,7 @@ if(isset($_GET['id'])){
     $movieStatement->execute();
     $moviepage = $movieStatement->fetch();
 
-    //select image query
+    //select image query to get all page images
     $imageQuery = "SELECT * FROM images WHERE Movie_ID = :id";
     $imageStatement = $db->prepare($imageQuery);
     $imageStatement->bindValue(':id', $id, PDO::PARAM_INT);
@@ -47,16 +51,95 @@ if(isset($_GET['id'])){
     //fetch all images  and store in array
     $images = $imageStatement->fetchAll();
 
-    //select comment query
+    //select comment query to get all page comments
     $commentQuery = "SELECT * FROM comments WHERE Movie_ID = :id ORDER BY date_created DESC";
     $commentStatement = $db->prepare($commentQuery);
     $commentStatement->bindValue(':id', $id, PDO::PARAM_INT);
     $commentStatement->execute(); 
     //fetch all images  and store in array
     $comments = $commentStatement->fetchAll();
+
 }
 
+       //if a comment is added by a user that's not logged in 
+ if( $_POST && !empty($_POST['submit_anonymous'])){
+    if(!empty($_POST['name']) && !empty($_POST['comment'])){
+            //  Sanitize user input to escape HTML entities and filter out dangerous characters.
+            $name1 = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $comment1 = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $id1 = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+           if(filter_input(INPUT_POST,'id',FILTER_VALIDATE_INT) !== false){
+                 //  Build the parameterized SQL query and bind to the above sanitized values.
+                $anonymousQuery = "INSERT INTO comments (commenter_name, content,Movie_ID,is_anonymous_user) VALUES (:commenter_name,:content,:Movie_ID,:is_anonymous_user)";
+                $anonymousStatement = $db->prepare($anonymousQuery);
+
+                //  Bind values to the parameters
+                $anonymousStatement->bindValue(':commenter_name', $name1);
+                $anonymousStatement->bindValue(':content', $comment1);
+                $anonymousStatement->bindValue(':Movie_ID', $id1);
+                $anonymousStatement->bindValue(':is_anonymous_user', TRUE);
+
+                //  Execute the INSERT.
+                $anonymousStatement->execute();
+
+                //redirect to home page
+                // $url = "index.php?id=".$id1; 
+                // header("Location: $url");
+                header("Location: index.php?id=".$id1);
+           }
+           else{
+             header("Location: index.php?id=".$id1);
+
+           }
+        }
+    //if any field is empty
+    else{
+        $inputError = "* Field cannot be empty" ;
+    }
+ }
+
+    //if a comment is added by a logged-in or admin user 
+ if($_POST && !empty($_POST['submit_logged-in'])){
+     if(!empty($_POST['comment'])){
+            //  Sanitize user input to escape HTML entities and filter out dangerous characters.
+            $comment2 = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $name2 = $_SESSION['username'];
+            $id2 = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+            //  Build the parameterized SQL query and bind to the above sanitized values.
+            $loggedQuery = "INSERT INTO comments (commenter_name, content,Movie_ID,is_anonymous_user) VALUES (:commenter_name,:content,:Movie_ID,:is_anonymous_user)";
+            $loggedStatement = $db->prepare($loggedQuery);
+
+            //  Bind values to the parameters
+            $loggedStatement->bindValue(':commenter_name', $name2);
+            $loggedStatement->bindValue(':content', $comment2);
+            $loggedStatement->bindValue(':Movie_ID', $id2);
+            $loggedStatement->bindValue(':is_anonymous_user', FALSE);
+
+            //  Execute the INSERT.
+            $loggedStatement->execute();
+
+            //redirect to home page
+            header("Location: index.php?id=".$id2);
+        }
+    else{
+        $inputError = "* Field cannot be empty" ;
+    }
+ }
+
+
+
+
+
+
+
+
+
+
 ?>
+
+
 
 
 <!DOCTYPE html>
@@ -125,21 +208,38 @@ if(isset($_GET['id'])){
                     <?php endif ?>
 
                     <!--comments form section-->
+                    <!--form for non-registered users-->
                     <?php if(!isset($_SESSION['username'])): ?>
-                    <form>
-                           <label for="comment">Post a comment</label><br>
-                           <textarea id="comment" name="comment" rows="10" cols="100"></textarea>
-                           <br><br> 
-                           <label for="name">Name</label>
-                           <input type="" name=""><br>
-                           <button type="submit" value="Post" id="submit_anonymous">Post Blog</button>
+                    <form method="post" action="index.php">
+                       <!-- Hidden input for the quote primary key. -->
+                       <input type="hidden" id="id" name="id" value="<?= $moviepage['Id'] ?>">
+
+                       <label for="comment">Post a comment</label><br>
+                       <textarea id="comment" name="comment" rows="10" cols="100"></textarea>
+                       <br><br> 
+                       <label for="name">Name</label>
+                       <input type="text" name="name" id="name"><br>
+
+                       <?php if(isset($inputError)):?>
+                       <span class="error"><?= $inputError?></span><br>
+                       <?php endif ?>
+
+                       <button type="submit" value="Post" id="submit_anonymous" name ="submit_anonymous">Post Comment</button>
                     </form>
                     <?php else: ?>
-                     <form>
-                           <label for="comment">Post a comment</label><br>
-                           <textarea id="comment" name="comment" rows="10" cols="100"></textarea>
-                           <br><br> 
-                           <button type="submit" value="Post" id="submit_logged-in">Post Blog</button>
+                     <!--form for logged-in users-->
+                     <form method="post" action="index.php">
+                       <!-- Hidden input for the quote primary key. -->
+                       <input type="hidden" id="id" name="id" value="<?= $moviepage['Id'] ?>">
+                       <label for="comment">Post a comment</label><br>
+                       <textarea id="comment" name="comment" rows="10" cols="100"></textarea>
+                       <br><br> 
+
+                       <?php if(isset($inputError)):?>
+                       <span class="error"><?= $inputError?></span><br>
+                       <?php endif ?>
+
+                       <button type="submit" value="Post" id="submit_logged-in" name ="submit_logged-in">Post Comment</button>
                     </form>
                     <?php endif ?>
 
