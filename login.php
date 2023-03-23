@@ -14,26 +14,26 @@ $emptyfieldError;
 $loginError;
 $successMessage;
 
+$email = "";
+
 if($_POST){
 	if ( empty($_POST['email']) || empty( $_POST['password'])) {
 		// Could not get the data that should have been sent.
 		$emptyfieldError = 'Fields cannot be empty. Please fill both the username and password fields!';
 	}
 	else{  
-	        if(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) === false){
+	    if(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) === false){
 	            $loginError = "Email is invalid";
 	        }
         else{
 	    	$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);		
           }
-        }
-
-		//select query
-	    $query = "SELECT ID,Password,Is_Admin FROM users WHERE Email = :email";
+          //select query
+	    $query = "SELECT * FROM users WHERE Email = :email";
 
 	    // A PDO::Statement is prepared from the query.
 	    $statement = $db->prepare($query);
-	    $statement->bindValue(':email', $email);
+	    $statement->bindValue(':email',$email);
 
 	    // Execution on the DB server is delayed until we execute().
 	    $statement->execute(); 
@@ -43,11 +43,13 @@ if($_POST){
 	        if (password_verify($_POST['password'], $userDetails['Password'])){
 				// Verification success! User has logged-in!
 				// Create sessions, so we know the user is logged in.
+				$_SESSION['username'] = $userDetails['Username'];
 				$_SESSION['email'] = $_POST['email'];
 				$_SESSION['id'] = $userDetails['ID'];
 				$_SESSION['isAdmin'] = $userDetails['Is_Admin'];
 				$successMessage =  'Login successful!';
-				header("Refresh:3; url=pageAdministration.php");
+			    header("Refresh:3,url=pageAdministration.php" );
+
 		       } 
 
 		    else {
@@ -59,11 +61,9 @@ if($_POST){
 			// Incorrect email
 			$loginError = " Login Failed.Incorrect email and/or password!";
 	    }
-
-
+        }
 		
 	}
-
 ?>
 
 
