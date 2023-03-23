@@ -12,19 +12,23 @@ require('connect.php');
 
 // error variable for input fields
 $emailError;
+$usernameError;
 $passwordError1;
 $passwordError2;
 
-//variable to save used email address from users table
+//variable to save used email address and username from users table
 $emailArray = [];
+$usernameArray =[];
 
 //variables to store input fields values
 $email;
+$username;
 $password1;
 $password2;
 
 //boolean variables to check if field input are valid
 $emailValid = true;
+$username = true;
 $passwordValid = true;
 $samePasswordCheck = true;
 
@@ -46,15 +50,26 @@ $users = $statement->fetchAll();
 //add user emails to email array
 foreach($users as $user){
     array_push($emailArray, $user['Email']);
+    array_push($usernameArray,$user['Username']);
 }
 
 
-print_r($emailArray);
-
-
-
 if($_POST){
-	if(isset($_POST['email'])){
+    if(!empty($_POST['username'])){
+        if(in_array($_POST['username'], $usernameArray) === true){
+            $usernameError = "Username exists already. Please enter another username";
+            $usernameValid = false;
+        }
+        else{
+             $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        }
+    }
+    else{
+        $usernameError = "Username is required";
+        $usernameValid = false;
+
+    }
+	if(!empty($_POST['email'])){
         if(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) === false){
             $emailError = "Email is invalid";
             $emailValid = false;
@@ -73,7 +88,7 @@ if($_POST){
     }
 
 
-		if(isset($_POST['password1'])){
+		if(!empty($_POST['password1'])){
 			$regex ='/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,}$/';
             if(!preg_match($regex, $_POST['password1'])){
                 $passwordError1 = "Password is Invalid";
@@ -88,7 +103,7 @@ if($_POST){
             $passwordValid =  false;
         }
 
-        if(isset($_POST['password2'])){  
+        if(!empty($_POST['password2'])){  
             if($_POST['password1'] != $_POST['password2']){
                 $passwordError2 = "Passwords do not match. Please try again";
                 $samePasswordCheck =  false;
@@ -99,16 +114,17 @@ if($_POST){
             $samePasswordCheck =  false;
         }
 
-	if($emailValid && $passwordValid && $samePasswordCheck){
+	if($emailValid && $usernameValid && $passwordValid && $samePasswordCheck){
 		$hash_password_salt = password_hash($password1,
         PASSWORD_DEFAULT, array('cost' => 9));
 
         //  Build the parameterized SQL query and bind to the above sanitized values.
-            $insertQuery = "INSERT INTO users (Password,Email,Is_Admin) VALUES (:password,:email,:Is_Admin)";
+            $insertQuery = "INSERT INTO users (Username,Password,Email,Is_Admin) VALUES (:username,:password,:email,:Is_Admin)";
             $insertStatement = $db->prepare($insertQuery);
 
 
             //  Bind values to the parameters
+            $insertStatement->bindValue(':username', $username);
             $insertStatement->bindValue(':email', $email);
             $insertStatement->bindValue(':password', $hash_password_salt);
             $insertStatement->bindValue(':Is_Admin', 0);
@@ -135,6 +151,16 @@ if($_POST){
 
 <body>
 	<form method="post" action="registration.php">
+
+        <label for="username">Username</label><br>
+        <input id="username" name="username" type="text"><br><br>
+
+
+        <!-- if useranme field has error,display error message--> 
+        <?php if(isset($usernameError)): ?>
+            <span class="error"><?= $usernameError ?></span><br>
+        <?php endif ?>
+
 		<label for="email">Email</label><br>
         <input id="email" name="email" type="email"><br><br>
 
