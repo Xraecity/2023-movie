@@ -17,14 +17,7 @@ if (!isset($_SESSION['username'])) {
     header('location: login.php');
 }
 
-//if logout button is clicked
-if (isset($_GET['logout'])) {
-    session_destroy();
-    unset($_SESSION['username']);
-    unset($_SESSION['id']);
-    unset($_SESSION['isAdmin']);
-    header("location: index.php");
-}
+
 
 //fetch data from movies table 
 //select query
@@ -70,13 +63,29 @@ $users = $userStatement->fetchAll();
 </head>
 
 <body>
+	<h1><a href = "index.php">Movies CMS</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="index.php">Home</a></li>
+                    
+                    <?php if(isset($_SESSION['username'])): ?>
+                    <li><a href="pageAdministration.php"><?= $_SESSION['username']?></a></li>
+                    <button><a href="logout.php">Log out</a></button>
+
+                    <?php else:?>
+                        <li><a href="login.php">Login</a></li>
+                        <li><a href="registration.php">Register</a></li>
+                    <?php endif?>
+
+                </ul>
+            </nav>
 	<div>
 		<h2>Page Administration</h2>
-		<button><a href="index.php?logout='1'">Log out</a></button>
+		
 	</div>
 
 	<div>
-		<h3>Welcome <?= $_SESSION['email']?></h3>
+		<h3>Welcome <?= $_SESSION['username']?></h3>
 		<button><a href="pageCreate.php">Add Movie</a></button>
 	</div>
 	
@@ -105,6 +114,7 @@ $users = $userStatement->fetchAll();
     	<?php foreach($users as $user): ?>
     		<li>
     			<p>User_ID:  <?=$user['ID']?></p>
+    			<p>Username:  <?=$user['Username']?></p>
     			<p>Email: <?= $user['Email']?></p>
     			<p>Password: <?= $user['Password']?></p>
     			<p>Is_Admin: 
