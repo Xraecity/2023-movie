@@ -13,7 +13,7 @@ require('connect.php');
 //variable to store movies
 $movies = [];
 $selectError="";
-$movieListSort = "Title";
+$movieListSort = "title";
 
 
 //check if session exists
@@ -22,12 +22,27 @@ if (!isset($_SESSION['username'])) {
     header('location: login.php');
 }
 
-//sort movie list
-if(isset($_POST['movieListSort'])){
-	echo($_POST['movieListSort']);
-	$movieListSort = filter_input(INPUT_POST,'movieListSort',FILTER_SANITIZE_STRING);
+//default movie display
+//fetch data from movies table 
+//select query
+$titleQuery = "SELECT * FROM movies ORDER BY name ASC";
 
-	if($movieListSort == "Title"){
+// A PDO::Statement is prepared from the query.
+$titleStatement = $db->prepare($titleQuery);
+
+// Execution on the DB server is delayed until we execute().
+$titleStatement->execute(); 
+
+//fetch all movies and store in array
+$movies = $titleStatement->fetchAll();
+
+//sort movie list
+if($_POST){
+if(isset($_POST['movieListSort'])){
+	$movieListSort = filter_input(INPUT_POST,'movieListSort',FILTER_SANITIZE_STRING);
+	echo($movieListSort);
+
+	if($movieListSort == "title"){
 		//fetch data from movies table 
 		//select query
 		$titleQuery = "SELECT * FROM movies ORDER BY name ASC";
@@ -46,7 +61,7 @@ if(isset($_POST['movieListSort'])){
 	elseif($movieListSort == "Date-Created"){
 		//fetch data from movies table 
 		//select query
-		$dateCreatedQuery = "SELECT * FROM movies ORDER BY Date_Created ASC";
+		$dateCreatedQuery = "SELECT * FROM movies ORDER BY Date_Created DESC";
 
 		// A PDO::Statement is prepared from the query.
 		$dateCreatedStatement = $db->prepare($dateCreatedQuery);
@@ -58,10 +73,10 @@ if(isset($_POST['movieListSort'])){
 		//fetch all movies and store in array
 		$movies = $dateCreatedStatement->fetchAll();
 	}
-	elseif($movieListSort = "Realease-Date"){
+	elseif($movieListSort = "Release-Date"){
 		//fetch data from movies table 
 		//select query
-		$releaseDateQuery = "SELECT * FROM movies ORDER BY name ASC";
+		$releaseDateQuery = "SELECT * FROM movies ORDER BY Release_Date DESC";
 
 		// A PDO::Statement is prepared from the query.
 		$releaseDateStatement = $db->prepare($releaseDateQuery);
@@ -72,6 +87,7 @@ if(isset($_POST['movieListSort'])){
 
 		//fetch all movies and store in array
 		$movies = $releaseDateStatement->fetchAll();
+	
 	}
 	else{
 		$selectError = "Please select a sort option";
@@ -79,21 +95,8 @@ if(isset($_POST['movieListSort'])){
 	}
 
 }
+}
 
-
-//fetch data from movies table 
-		//select query
-		$titleQuery = "SELECT * FROM movies ORDER BY name ASC";
-
-		// A PDO::Statement is prepared from the query.
-		$titleStatement = $db->prepare($titleQuery);
-
-		// Execution on the DB server is delayed until we execute().
-		$titleStatement->execute(); 
-
-
-		//fetch all movies and store in array
-		$movies = $titleStatement->fetchAll();
 
 
 //fetch data from users table
@@ -109,8 +112,6 @@ $userStatement->execute();
 
 //fetch all blogs and store in array
 $users = $userStatement->fetchAll();
-
-
 
 
 ?>
@@ -155,9 +156,9 @@ $users = $userStatement->fetchAll();
     <h2>Movies List</h2>
     <!--sort movies list by title, cretaion date or release date-->
     <form method="post" accept="pageAdministration.php">
-    	<label for="membership">Sort Movies List by:</label>
+    	<label for="movieListSort">Sort Movies List by:</label>
         <select name="movieListSort" id="moviesListSort">
-	        <option value="Title" selected >Title</option>
+	        <option value="title" selected >Title</option>
 		    <option value="Date-Created">Date Created</option>
 		    <option value="Release-Date" >Movie Release Date</option>
 	    </select>
@@ -168,8 +169,7 @@ $users = $userStatement->fetchAll();
 	    <?php endif?>
     </form>
 
-
-    <p><b>Movies sorted by: <?= $movieListSort?></b></p>
+    <p><b>Movies sorted by <?= $movieListSort?></b></p>
     
 
     <ul>
@@ -215,6 +215,9 @@ $users = $userStatement->fetchAll();
 
 
   <?php endif ?>
+
+
+  
 
 
 
