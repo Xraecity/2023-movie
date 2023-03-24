@@ -34,6 +34,7 @@ if(isset($_GET['id'])){
     // Sanitize the id. Like above but this time from INPUT_GET.
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
+    if(filter_input(INPUT_GET,'id',FILTER_VALIDATE_INT) !== false){
     // Build the parametrized SQL query using the filtered id.
     $movieQuery = "SELECT * FROM movies WHERE id = :id";
     $movieStatement = $db->prepare($movieQuery);
@@ -58,6 +59,7 @@ if(isset($_GET['id'])){
     $commentStatement->execute(); 
     //fetch all images  and store in array
     $comments = $commentStatement->fetchAll();
+   }
 
 }
 
