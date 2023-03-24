@@ -181,7 +181,7 @@ if(isset($_GET['id'])){
                     
 
                     <h4>Genre: <?=$moviepage['Genre']?></h4>
-                    <p>Release Date:<?=$moviepage['Release Date']?></p>
+                    <p>Release Date:<?=$moviepage['Release_Date']?></p>
                     
                     <p class="content"><?=$moviepage['Description']?></p>
 
@@ -249,10 +249,25 @@ if(isset($_GET['id'])){
 
                 <?php foreach($movies as $movie): ?>
                     <div>
-                        <img src="Image_Uploads/<?=$movie['images']?>" alt="avengers-image">
-                        <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
-                        <p class="content"><?=$movie['Description']?></p>
-                        <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
+                        <?php
+                        //select image query to get all page images
+                        $homeimageQuery = "SELECT * FROM images WHERE Movie_ID = :id";
+                        $homeimageStatement = $db->prepare($homeimageQuery);
+                        $homeimageStatement->bindValue(':id', $movie['Id'], PDO::PARAM_INT);
+                        $homeimageStatement->execute(); 
+                        //fetch all images  and store in array
+                        $Homeimages = $homeimageStatement->fetchAll();
+                        ?>
+                        <?php if(!empty($Homeimages)): ?>
+                            <img src="Image_Uploads/<?=$Homeimages[0]['name']?>" alt="<?=$movie['Name']?>">
+                            <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
+                            <p class="content"><?=$movie['Description']?></p>
+                            <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
+                        <?php else:?>
+                            <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
+                            <p class="content"><?=$movie['Description']?></p>
+                            <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
+                        <?php endif ?>
                     </div>    
                 <?php endforeach ?>
             <?php endif ?>
