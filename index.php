@@ -65,30 +65,51 @@ if(isset($_GET['id'])){
 
        //if a comment is added by a user that's not logged in 
  if( $_POST && !empty($_POST['submit_anonymous'])){
-    if(!empty($_POST['name']) && !empty($_POST['comment'])){
+    if(!empty($_POST['comment'])){
             //  Sanitize user input to escape HTML entities and filter out dangerous characters.
-            $name1 = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $comment1 = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $id1 = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
 
            if(filter_input(INPUT_POST,'id',FILTER_VALIDATE_INT) !== false){
-                 //  Build the parameterized SQL query and bind to the above sanitized values.
-                $anonymousQuery = "INSERT INTO comments (commenter_name, content,Movie_ID,is_anonymous_user) VALUES (:commenter_name,:content,:Movie_ID,:is_anonymous_user)";
-                $anonymousStatement = $db->prepare($anonymousQuery);
 
-                //  Bind values to the parameters
-                $anonymousStatement->bindValue(':commenter_name', $name1);
-                $anonymousStatement->bindValue(':content', $comment1);
-                $anonymousStatement->bindValue(':Movie_ID', $id1);
-                $anonymousStatement->bindValue(':is_anonymous_user', TRUE);
+                if(!empty($_POST['name'])){
+                     $name1 = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                     //  Build the parameterized SQL query and bind to the above sanitized values.
+                    $anonymousQuery = "INSERT INTO comments (commenter_name, content,Movie_ID,is_anonymous_user) VALUES (:commenter_name,:content,:Movie_ID,:is_anonymous_user)";
+                    $anonymousStatement = $db->prepare($anonymousQuery);
 
-                //  Execute the INSERT.
-                $anonymousStatement->execute();
+                    //  Bind values to the parameters
+                    $anonymousStatement->bindValue(':commenter_name', $name1);
+                    $anonymousStatement->bindValue(':content', $comment1);
+                    $anonymousStatement->bindValue(':Movie_ID', $id1);
+                    $anonymousStatement->bindValue(':is_anonymous_user', TRUE);
 
-                //redirect to home page
-                // $url = "index.php?id=".$id1; 
-                // header("Location: $url");
-                header("Location: index.php?id=".$id1);
+                    //  Execute the INSERT.
+                    $anonymousStatement->execute();
+
+                    //redirect to home page
+                    header("Location: index.php?id=".$id1);
+                }
+                else{
+                     //  Build the parameterized SQL query and bind to the above sanitized values.
+                    $anonymousQuery = "INSERT INTO comments (commenter_name, content,Movie_ID,is_anonymous_user) VALUES (:commenter_name,:content,:Movie_ID,:is_anonymous_user)";
+                    $anonymousStatement = $db->prepare($anonymousQuery);
+
+                    //  Bind values to the parameters
+                    $anonymousStatement->bindValue(':commenter_name', 'Anomymous');
+                    $anonymousStatement->bindValue(':content', $comment1);
+                    $anonymousStatement->bindValue(':Movie_ID', $id1);
+                    $anonymousStatement->bindValue(':is_anonymous_user', TRUE);
+
+                    //  Execute the INSERT.
+                    $anonymousStatement->execute();
+
+                    //redirect to home page
+                    header("Location: index.php?id=".$id1);
+                 
+                }
+                
+
            }
            else{
              header("Location: index.php?id=".$id1);
@@ -97,7 +118,7 @@ if(isset($_GET['id'])){
         }
     //if any field is empty
     else{
-        $inputError = "* Field cannot be empty" ;
+        $inputError = "*  Comment Field cannot be empty" ;
     }
  }
 
@@ -176,7 +197,7 @@ if(isset($_GET['id'])){
             <?php if($_GET):?>
                    <h3><?= $moviepage['Name'] ?></h3>
                     <?php if(isset($_SESSION['username'])): ?>
-                    <button><a href="pageAdministration.php">Edit Movie</a></button>  
+                    <button><a href="pageUpdate.php?id=<?= $moviepage['Id'] ?>">Edit Movie</a></button>  
                     <?php else:?>
                     <button><a href="login.php">Edit Movie</a></button>    
                     <?php endif ?>
@@ -242,6 +263,10 @@ if(isset($_GET['id'])){
                        <?php endif ?>
 
                        <button type="submit" value="Post" id="submit_logged-in" name ="submit_logged-in">Post Comment</button>
+
+                       <?php if($_SESSION['isAdmin'] == 1): ?>
+                        <button><a href="pageUpdate.php?id=<?= $moviepage['Id']?>">Moderate Comment</a></button>
+                       <?php endif ?>
                     </form>
                     <?php endif ?>
 
