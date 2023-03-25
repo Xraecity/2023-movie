@@ -16,6 +16,7 @@ use \Gumlet\ImageResize;
 session_start();
 
 //variables
+$images = [];
 $title = "";
 $genre = "";
 $description = "";
@@ -103,9 +104,9 @@ if(isset($_GET['id'])){
     //fetch all images  and store in array
     $comments = $commentStatement->fetchAll();
 }
-
 //if post
 if($_POST && !empty($_POST['update'])){
+    print_r($_POST);
        if(!empty($_POST['id'])){
          $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
        }
@@ -144,7 +145,7 @@ if($_POST && !empty($_POST['update'])){
         //validate and sanitize release date
         if(!empty($_POST['releaseDate'])){ 
             $releaseDate = filter_input(INPUT_POST, 'releaseDate', FILTER_SANITIZE_STRING);
-            echo($releaseDate);
+            
             
         }
         else{
@@ -168,7 +169,7 @@ if($_POST && !empty($_POST['update'])){
                         echo("file uploaded successfully");
                     }
                     else{
-                    $imageError = "Wrong file type.Please enter a image file.";
+                    $imageError = "Wrong file type.Please enter a image file of type (PNG, JPG, GIF).";
                     }     
                 }
                    //catch exception
@@ -210,7 +211,7 @@ if($_POST && !empty($_POST['update'])){
             }
 
             //redirect to movie page
-            header("Location: index.php?id=".$id);
+            // header("Location: index.php?id=".$id);
                
        }
    }
@@ -303,12 +304,12 @@ if($_POST && !empty($_POST['update'])){
                 <?php endif ?>
 
                 <?php if(!empty($images)):?>
-                    <h3>Images</h3>
+                    <h3>Select Images to Delete</h3>
                     <ul>
                     <?php foreach($images as $image):?>
                         <li>
-                        <img src="Image_Uploads/<?= $image['name'] ?>" alt= "<?=$movie['Name']?>-image"><br>
-                        <button type="submit" id="deleteImage" name="deleteImage"  onclick="return confirm('Are you sure you want to delete?')"><a href="imageDelete.php?id=<?= $image['id']?>&movieID=<?= $movie['Id']?>&filePath=<?= file_Upload_Path($image['name'])?>">Delete Image</a></button>
+                       <img src="Image_Uploads/<?= $image['name'] ?>" alt= "<?=$movie['Name']?>-image"><br>
+                        <button type="submit" id="deleteImage" name="deleteImage"  onclick="return confirm('Are you sure you want to delete?')"><a href="imageDelete.php?id=<?= $image['id']?>&movieID=<?= $movie['Id']?>&filePath=<?= file_Upload_Path($image['name'])?>">Delete Image</a></button> 
                    </li>
 
                     <?php endforeach ?>
@@ -316,7 +317,7 @@ if($_POST && !empty($_POST['update'])){
 
                 <?php endif ?> 
 
-                 <label for='file'>Add Image:</label>
+                 <label for='file'>Add Image (PNG, JPG, GIF):</label>
                  <input type='file' name='file' id='file'><br><br>
 
                  <!-- if filetype has error,display error message--> 

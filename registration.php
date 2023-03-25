@@ -28,7 +28,7 @@ $password2;
 
 //boolean variables to check if field input are valid
 $emailValid = true;
-$username = true;
+$usernameValid = true;
 $passwordValid = true;
 $samePasswordCheck = true;
 

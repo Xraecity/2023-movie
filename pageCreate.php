@@ -124,7 +124,7 @@ if($_POST ){
                     echo("file uploaded successfully");
                 }
                 else{
-                $imageError = "Wrong file type.Please enter a image file.";
+                $imageError = "Wrong file type.Please enter a image file pf type(PNG, JPG, GIF).";
                 }     
             }
                //catch exception
@@ -256,7 +256,7 @@ if($_POST ){
                 <span class="error"><?php echo $releaseDateError ?></span><br>
                 <?php endif ?>
 
-                 <label for='file'>Add Image:</label>
+                 <label for='file'>Add Image(PNG, JPG, GIF):</label>
                  <input type='file' name='file' id='file'><br><br>
 
                  <!-- if filetype has error,display error message--> 
