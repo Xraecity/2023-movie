@@ -8,6 +8,7 @@
 
 ****************/
 require('connect.php');
+session_start();
 
 
 //variable for field error message
@@ -23,7 +24,9 @@ $passwordValid = true;
 $samePasswordCheck = true;
 
 
-// Retrieve quote to be edited, if id GET parameter is in URL.
+
+
+// Retrieve user to be edited, if id GET parameter is in URL.
 if(isset($_GET['id'])){
     // Sanitize the id. Like above but this time from INPUT_GET.
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
@@ -147,6 +150,8 @@ if($_POST && !empty($_POST['update'])){
     <title>Edit this User!</title>
 </head>
 <body>
+    <div class="block">
+    <?php include("header.php")?>
     <!-- Remember that alternative syntax is good and html inside php is bad -->
             <form method="post">
                 <!-- Hidden input for the quote primary key. -->
@@ -154,7 +159,7 @@ if($_POST && !empty($_POST['update'])){
 
                  <!-- Quote title and content are echoed into the input value attributes. -->
                 <label for="username">Username</label><br>
-                <input type= "username" id="useranem" name="username" value="<?= $user['Username']?>"><br><br>
+                <input type= "username" id="username" name="username" value="<?= $user['Username']?>"><br><br>
 
                 <?php if(isset($username_error)): ?>
                 <span class="error"><?= $username_error ?></span><br>
@@ -184,6 +189,7 @@ if($_POST && !empty($_POST['update'])){
 
                 <button type="submit" value="update " id="submit" name="update">Update</button>
 
-            </form>        
+            </form>      
+            </div>  
 </body>
 </html>
