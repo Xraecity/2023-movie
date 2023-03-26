@@ -9,6 +9,7 @@
 ****************/
 
 require('connect.php');
+session_start();
 require '\xampp\htdocs\WD2\challenges\Challenge7_Maryam_Gambo\php-image-resize-master\lib\ImageResize.php';
 require '\xampp\htdocs\WD2\challenges\Challenge7_Maryam_Gambo\php-image-resize-master\lib\ImageResizeException.php';
 
@@ -16,7 +17,7 @@ use \Gumlet\ImageResize;
 
 //variables
 $title = "";
-$genre = "";
+$genre;
 $description = "";
 $releaseDate = "";
 
@@ -79,7 +80,14 @@ if($_POST ){
 
     //validate and sanitize genre
     if(!empty($_POST['genre'])){ 
-        $genre = filter_input(INPUT_POST, 'genre', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if(filter_input(INPUT_POST,'genre',FILTER_VALIDATE_INT) !== false){
+             $genre = filter_input(INPUT_POST, 'genre', FILTER_SANITIZE_NUMBER_INT);
+        }
+        else{
+            $genreError = "Genre is invalid";
+            $genreValid = false;
+        }
+       
         
     }
     else{
@@ -124,7 +132,7 @@ if($_POST ){
                     echo("file uploaded successfully");
                 }
                 else{
-                $imageError = "Wrong file type.Please enter a image file pf type(PNG, JPG, GIF).";
+                $imageError = "Wrong file type.Please enter a image file of type(PNG, JPG, GIF).";
                 }     
             }
                //catch exception
@@ -201,22 +209,7 @@ if($_POST ){
 <body>
     <!-- Remember that alternative syntax is good and html inside php is bad -->
      <div class="block">
-           <h1><a href = "index.php">Movies CMS</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    
-                    <?php if(isset($_SESSION['username'])): ?>
-                    <li><a href="pageAdministration.php"><?= $_SESSION['username']?></a></li>
-                    <button><a href="logout.php">Log out</a></button>
-
-                    <?php else:?>
-                        <li><a href="login.php">Login</a></li>
-                        <li><a href="registration.php">Register</a></li>
-                    <?php endif?>
-
-                </ul>
-            </nav>
+           <?php include("header.php")?>
 
             <h2>Add a New Movie</h2>
 
@@ -232,7 +225,18 @@ if($_POST ){
                 <?php endif ?>
 
                 <label for="genre">Genre</label><br>
-                <input id="genre" name="genre" type="text"><br><br>
+                <select name="genre" id="genre">
+                <option value="">Select a genre</option>
+                <option value="1">Adventure</option>
+                <option value="2">Action</option>
+                <option value="3">Sci-fi</option>
+                <option value="4">Horror</option>
+                <option value="5">Comedy</option>
+                <option value="6">Drama</option>
+                <option value="7">Fantasy</option>
+                <option value="8">Mystery</option>
+                <option value="9">Romance</option>
+                </select><br><br>
 
                 <!--if genre field is empty or has error,display error message--> 
                 <?php if(isset($genreError)): ?>
