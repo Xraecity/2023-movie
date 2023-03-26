@@ -40,7 +40,6 @@ $movies = $titleStatement->fetchAll();
 if($_POST){
 if(isset($_POST['movieListSort'])){
 	$movieListSort = filter_input(INPUT_POST,'movieListSort',FILTER_SANITIZE_STRING);
-	echo($movieListSort);
 
 	if($movieListSort == "title"){
 		//fetch data from movies table 
@@ -114,6 +113,23 @@ $userStatement->execute();
 $users = $userStatement->fetchAll();
 
 
+
+// categories query
+$genreQuery = "SELECT * FROM genres";
+
+// A PDO::Statement is prepared from the query.
+$genreStatement = $db->prepare($genreQuery);
+
+// Execution on the DB server is delayed until we execute().
+$genreStatement->execute(); 
+
+
+//fetch all blogs and store in array
+$genres = $genreStatement->fetchAll();
+
+
+
+
 ?>
 
 
@@ -122,26 +138,12 @@ $users = $userStatement->fetchAll();
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Login page</title>
+	<title>Administration page</title>
 </head>
 
 <body>
-	<h1><a href = "index.php">Movies CMS</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    
-                    <?php if(isset($_SESSION['username'])): ?>
-                    <li><a href="pageAdministration.php"><?= $_SESSION['username']?></a></li>
-                    <button><a href="logout.php">Log out</a></button>
-
-                    <?php else:?>
-                        <li><a href="login.php">Login</a></li>
-                        <li><a href="registration.php">Register</a></li>
-                    <?php endif?>
-
-                </ul>
-            </nav>
+	<div class="block">
+	<?php include("header.php")?>
 	<div>
 		<h2>Page Administration</h2>
 		
@@ -149,13 +151,13 @@ $users = $userStatement->fetchAll();
 
 	<div>
 		<h3>Welcome <?= $_SESSION['username']?></h3>
-		<button><a href="pageCreate.php">Add Movie</a></button>
 	</div>
 	
     
     <h2>Movies List</h2>
-    <!--sort movies list by title, cretaion date or release date-->
-    <form method="post" accept="pageAdministration.php">
+    <button><a href="pageCreate.php">Add Movie</a></button>
+    <!--sort movies list by title, creation date or release date-->
+    <form method="post" action="pageAdministration.php">
     	<label for="movieListSort">Sort Movies List by:</label>
         <select name="movieListSort" id="moviesListSort">
 	        <option value="title" selected >Title</option>
@@ -181,6 +183,21 @@ $users = $userStatement->fetchAll();
     	<?php endforeach ?>
 
     </ul>
+
+
+
+    <h2>Movie Genres List</h2>
+    <button><a href="createCategory.php">Create Genre</a></button>
+
+    <ul>
+    	<?php foreach($genres as $genre): ?>
+    		<li><?= $genre['Name']?>
+    			<button><a = href="updateCategory.php?id=<?= $genre['ID']?>">Update</a></button>
+    		</li>
+    	<?php endforeach ?>
+
+    </ul>
+
 
 
   <?php if($_SESSION['isAdmin'] == 1): ?>
@@ -218,7 +235,7 @@ $users = $userStatement->fetchAll();
 
   
 
-
+</div>
 
 </body>
 </html>
