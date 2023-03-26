@@ -18,7 +18,8 @@ session_start();
 //variables
 $images = [];
 $title = "";
-$genre = "";
+$genre;
+$genreName = "";
 $description = "";
 $releaseDate = "";
 
@@ -87,7 +88,17 @@ if(isset($_GET['id'])){
     else{
         header("Location:index.php");
     }
+ 
+    
 
+    //select genre query to get movie genre
+    $genreQuery = "SELECT * FROM genres WHERE ID = :id";
+    $genreStatement = $db->prepare($genreQuery);
+    $genreStatement->bindValue(':id', $movie['Genre'], PDO::PARAM_INT);
+    $genreStatement->execute(); 
+    //fetch all images  and store in array
+    $genreName = $genreStatement->fetch();
+    
      //select image query to get all page images
     $imageQuery = "SELECT * FROM images WHERE Movie_ID = :id";
     $imageStatement = $db->prepare($imageQuery);
@@ -123,7 +134,13 @@ if($_POST && !empty($_POST['update'])){
 
         //validate and sanitize genre
         if(!empty($_POST['genre'])){ 
-            $genre = filter_input(INPUT_POST, 'genre', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+           if(filter_input(INPUT_POST,'genre',FILTER_VALIDATE_INT) !== false){
+             $genre = filter_input(INPUT_POST, 'genre', FILTER_SANITIZE_NUMBER_INT);
+            } 
+            else{
+            $genreError = "Genre is invalid";
+            $genreValid = false;
+        }
             
         }
         else{
@@ -246,22 +263,7 @@ if($_POST && !empty($_POST['update'])){
 <body>
     <!-- Remember that alternative syntax is good and html inside php is bad -->
      <div class="block">
-           <h1><a href = "index.php">Movies CMS</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    
-                    <?php if(isset($_SESSION['username'])): ?>
-                    <li><a href="pageAdministration.php"><?= $_SESSION['username']?></a></li>
-                    <button><a href="logout.php">Log out</a></button>
-
-                    <?php else:?>
-                        <li><a href="login.php">Login</a></li>
-                        <li><a href="registration.php">Register</a></li>
-                    <?php endif?>
-
-                </ul>
-            </nav>
+          <?php include("header.php")?>
 
             <h2>Update Movie</h2>
 
@@ -279,7 +281,18 @@ if($_POST && !empty($_POST['update'])){
                 <?php endif ?>
 
                 <label for="genre">Genre</label><br>
-                <input id="genre" name="genre" type="text" value="<?= $movie['Genre'] ?>"><br><br>
+                <select name="genre" id="genre">
+                    <option value="<?= $genreName['Name']?>"><?= $genreName['Name']?></option>
+                    <option value="1">Adventure</option>
+                    <option value="2">Action</option>
+                    <option value="3">Sci-fi</option>
+                    <option value="4">Horror</option>
+                    <option value="5">Comedy</option>
+                    <option value="6">Drama</option>
+                    <option value="7">Fantasy</option>
+                    <option value="8">Mystery</option>
+                    <option value="9">Romance</option>
+                </select><br><br>
 
                 <!--if genre field is empty or has error,display error message--> 
                 <?php if(isset($genreError)): ?>
