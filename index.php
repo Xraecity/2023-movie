@@ -14,19 +14,52 @@ session_start();
 //variable to store errors for comment form
 $inputError;
 $moviepage = [];
-
-//select query
-$query = "SELECT * FROM movies ORDER BY Name ASC";
-
-// A PDO::Statement is prepared from the query.
-$statement = $db->prepare($query);
-
-// Execution on the DB server is delayed until we execute().
-$statement->execute(); 
+$movieListSort = "Title";
+$genreError;
 
 
-//fetch all blogs and store in array
-$movies = $statement->fetchAll();
+//display movies based on categories for non-registered  users
+if($_POST && !empty($_POST['genre'])){
+    if(filter_input(INPUT_POST,'genre',FILTER_VALIDATE_INT) !== false){
+            $genre = filter_input(INPUT_POST, 'genre', FILTER_SANITIZE_NUMBER_INT);
+
+            $query = "SELECT * FROM movies WHERE Genre = :genre ORDER BY Name ASC";
+
+
+            // A PDO::Statement is prepared from the query.
+            $statement = $db->prepare($query); 
+            $statement->bindValue(':genre', $genre);   
+             
+
+            // Execution on the DB server is delayed until we execute().
+            $statement->execute(); 
+
+
+            //fetch all movies and store in array
+            $movies = $statement->fetchAll();
+
+            if(empty($movies)){
+            $genreError = "No movie found";
+            }
+}
+}
+else{
+    //select query
+    $query = "SELECT * FROM movies ORDER BY Name ASC";
+
+    // A PDO::Statement is prepared from the query.
+    $statement = $db->prepare($query);
+
+    // Execution on the DB server is delayed until we execute().
+    $statement->execute(); 
+
+
+    //fetch all movies and store in array
+    $movies = $statement->fetchAll();
+
+}
+
+
 
 
 // get and display full blog post
@@ -44,6 +77,14 @@ if(isset($_GET['id'])){
     $movieStatement->execute();
     $moviepage = $movieStatement->fetch();
 
+    //select genre query to get movie genre
+    $genreQuery = "SELECT Name FROM genres WHERE ID = :id";
+    $genreStatement = $db->prepare($genreQuery);
+    $genreStatement->bindValue(':id', $moviepage['Genre'], PDO::PARAM_INT);
+    $genreStatement->execute(); 
+    //fetch all images  and store in array
+    $genreName = $genreStatement->fetch();
+
     //select image query to get all page images
     $imageQuery = "SELECT * FROM images WHERE Movie_ID = :id";
     $imageStatement = $db->prepare($imageQuery);
@@ -60,8 +101,68 @@ if(isset($_GET['id'])){
     //fetch all images  and store in array
     $comments = $commentStatement->fetchAll();
    }
+}
+
+//sorting movies functionality section
+if($_POST){
+    if(isset($_POST['movieListSort'])){
+    $movieListSort = filter_input(INPUT_POST,'movieListSort',FILTER_SANITIZE_STRING);
+
+    if($movieListSort == "Title"){
+        //fetch data from movies table 
+        //select query
+        $titleQuery = "SELECT * FROM movies ORDER BY name ASC";
+
+        // A PDO::Statement is prepared from the query.
+        $titleStatement = $db->prepare($titleQuery);
+
+        // Execution on the DB server is delayed until we execute().
+        $titleStatement->execute(); 
+
+
+        //fetch all movies and store in array
+        $movies = $titleStatement->fetchAll();
+    }
+
+    elseif($movieListSort == "Date-Created"){
+        //fetch data from movies table 
+        //select query
+        $dateCreatedQuery = "SELECT * FROM movies ORDER BY Date_Created DESC";
+
+        // A PDO::Statement is prepared from the query.
+        $dateCreatedStatement = $db->prepare($dateCreatedQuery);
+
+        // Execution on the DB server is delayed until we execute().
+        $dateCreatedStatement->execute(); 
+
+
+        //fetch all movies and store in array
+        $movies = $dateCreatedStatement->fetchAll();
+    }
+    elseif($movieListSort = "Release-Date"){
+        //fetch data from movies table 
+        //select query
+        $releaseDateQuery = "SELECT * FROM movies ORDER BY Release_Date DESC";
+
+        // A PDO::Statement is prepared from the query.
+        $releaseDateStatement = $db->prepare($releaseDateQuery);
+
+        // Execution on the DB server is delayed until we execute().
+        $releaseDateStatement->execute(); 
+
+
+        //fetch all movies and store in array
+        $movies = $releaseDateStatement->fetchAll();
+    
+    }
+    else{
+        $selectError = "Please select a sort option";
+
+    }
 
 }
+}
+
 
        //if a comment is added by a user that's not logged in 
  if( $_POST && !empty($_POST['submit_anonymous'])){
@@ -118,7 +219,7 @@ if(isset($_GET['id'])){
         }
     //if any field is empty
     else{
-        $inputError = "*  Comment Field cannot be empty" ;
+        $inputError = "* Please enter a comment to submit" ;
     }
  }
 
@@ -147,18 +248,9 @@ if(isset($_GET['id'])){
             header("Location: index.php?id=".$id2);
         }
     else{
-        $inputError = "* Field cannot be empty" ;
+        $inputError = "* Please enter a comment to submit" ;
     }
  }
-
-
-
-
-
-
-
-
-
 
 ?>
 
@@ -177,127 +269,172 @@ if(isset($_GET['id'])){
 <body>
     <!-- Remember that alternative syntax is good and html inside php is bad -->
     <div class="block">
-            <h1><a href = "index.php">Movies CMS</a></h1>
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    
-                    <?php if(isset($_SESSION['username'])): ?>
-                    <li><a href="pageAdministration.php"><?= $_SESSION['username']?></a></li>
-                    <button><a href="logout.php">Log out</a></button>
+        <?php include("header.php")?>
 
-                    <?php else:?>
-                        <li><a href="login.php">Login</a></li>
-                        <li><a href="registration.php">Register</a></li>
-                    <?php endif?>
+        <?php if($_GET):?>
+               <h3><?= $moviepage['Name'] ?></h3>
+                <?php if(isset($_SESSION['username'])): ?>
+                <button><a href="pageUpdate.php?id=<?= $moviepage['Id'] ?>">Edit Movie</a></button>  
+                <?php else:?>
+                <button><a href="login.php">Edit Movie</a></button>    
+                <?php endif ?>
+                
 
-                </ul>
-            </nav>
+                <h4>Genre: <?=$genreName['Name']?></h4>
+                <p>Release Date:<?=$moviepage['Release_Date']?></p>
+                
+                <p class="content"><?=$moviepage['Description']?></p>
 
-            <?php if($_GET):?>
-                   <h3><?= $moviepage['Name'] ?></h3>
-                    <?php if(isset($_SESSION['username'])): ?>
-                    <button><a href="pageUpdate.php?id=<?= $moviepage['Id'] ?>">Edit Movie</a></button>  
-                    <?php else:?>
-                    <button><a href="login.php">Edit Movie</a></button>    
-                    <?php endif ?>
-                    
-
-                    <h4>Genre: <?=$moviepage['Genre']?></h4>
-                    <p>Release Date:<?=$moviepage['Release_Date']?></p>
-                    
-                    <p class="content"><?=$moviepage['Description']?></p>
-
-                    <!--image section-->
-                    <?php if(!empty($images)):?>
-                       <h4> Images</h4>
-                       <div>
-                           <?php foreach($images as $image): ?>
-                            <img src="Image_Uploads/<?= $image['name'] ?>" alt= "<?=$moviepage['Name']?>-image">
-                           <?php endforeach ?>
-                       </div>
-                    <?php endif ?> 
-                      
-                    <!--comments section--> 
-                    <?php if(!empty($comments)):?>
-                       <h4>Comments</h4>
-                       <?php foreach($comments as $comment): ?>
-                        <div>
-                            <p><b>Posted By: <?= $comment['commenter_name']?></b></p>
-                            <p><i><?= date("F d, Y, h:i a", strtotime($comment['date_created']))?> </i></p>
-                            <p><?= $comment['content']?></p>
-                        </div>
-                        <?php endforeach ?>
-                    <?php endif ?>
-
-                    <!--comments form section-->
-                    <!--form for non-registered users-->
-                    <?php if(!isset($_SESSION['username'])): ?>
-                    <form method="post" action="index.php">
-                       <!-- Hidden input for the quote primary key. -->
-                       <input type="hidden" id="id" name="id" value="<?= $moviepage['Id'] ?>">
-
-                       <label for="comment">Post a comment</label><br>
-                       <textarea id="comment" name="comment" rows="10" cols="100"></textarea>
-                       <br><br> 
-                       <label for="name">Name</label>
-                       <input type="text" name="name" id="name"><br>
-
-                       <?php if(isset($inputError)):?>
-                       <span class="error"><?= $inputError?></span><br>
-                       <?php endif ?>
-
-                       <button type="submit" value="Post" id="submit_anonymous" name ="submit_anonymous">Post Comment</button>
-                    </form>
-                    <?php else: ?>
-                     <!--form for logged-in users-->
-                     <form method="post" action="index.php">
-                       <!-- Hidden input for the quote primary key. -->
-                       <input type="hidden" id="id" name="id" value="<?= $moviepage['Id'] ?>">
-                       <label for="comment">Post a comment</label><br>
-                       <textarea id="comment" name="comment" rows="10" cols="100"></textarea>
-                       <br><br> 
-
-                       <?php if(isset($inputError)):?>
-                       <span class="error"><?= $inputError?></span><br>
-                       <?php endif ?>
-
-                       <button type="submit" value="Post" id="submit_logged-in" name ="submit_logged-in">Post Comment</button>
-
-                       <?php if($_SESSION['isAdmin'] == 1): ?>
-                        <button><a href="pageUpdate.php?id=<?= $moviepage['Id']?>">Moderate Comment</a></button>
-                       <?php endif ?>
-                    </form>
-                    <?php endif ?>
-
-                    
-
-            <?php else: ?>
-
-                <?php foreach($movies as $movie): ?>
+                <!--image section-->
+                <?php if(!empty($images)):?>
+                   <h4> Images</h4>
+                   <div>
+                       <?php foreach($images as $image): ?>
+                        <img src="Image_Uploads/<?= $image['name'] ?>" alt= "<?=$moviepage['Name']?>-image">
+                       <?php endforeach ?>
+                   </div>
+                <?php endif ?> 
+                  
+                <!--comments section--> 
+                <?php if(!empty($comments)):?>
+                   <h4>Comments</h4>
+                   <?php foreach($comments as $comment): ?>
                     <div>
-                        <?php
-                        //select image query to get all page images
-                        $homeimageQuery = "SELECT * FROM images WHERE Movie_ID = :id";
-                        $homeimageStatement = $db->prepare($homeimageQuery);
-                        $homeimageStatement->bindValue(':id', $movie['Id'], PDO::PARAM_INT);
-                        $homeimageStatement->execute(); 
-                        //fetch all images  and store in array
-                        $Homeimages = $homeimageStatement->fetchAll();
-                        ?>
-                        <?php if(!empty($Homeimages)): ?>
-                            <img src="Image_Uploads/<?=$Homeimages[0]['name']?>" alt="<?=$movie['Name']?>">
-                            <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
-                            <p class="content"><?=$movie['Description']?></p>
-                            <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
-                        <?php else:?>
-                            <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
-                            <p class="content"><?=$movie['Description']?></p>
-                            <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
-                        <?php endif ?>
-                    </div>    
-                <?php endforeach ?>
+                        <p><b>Posted By: <?= $comment['commenter_name']?></b></p>
+                        <p><i><?= date("F d, Y, h:i a", strtotime($comment['date_created']))?> </i></p>
+                        <p><?= $comment['content']?></p>
+                    </div>
+                    <?php endforeach ?>
+                <?php endif ?>
+
+                <!--comments form section-->
+                <!--form for non-registered users-->
+                <?php if(!isset($_SESSION['username'])): ?>
+                <form method="post" action="index.php">
+                   <!-- Hidden input for the quote primary key. -->
+                   <input type="hidden" id="id" name="id" value="<?= $moviepage['Id'] ?>">
+
+                   <label for="comment">Post a comment</label><br>
+                   <textarea id="comment" name="comment" rows="10" cols="100"></textarea>
+                   <br><br> 
+                   <label for="name">Name</label>
+                   <input type="text" name="name" id="name"><br>
+
+                   <?php if(isset($inputError)):?>
+                   <span class="error"><?= $inputError?></span><br>
+                   <?php endif ?>
+
+                   <button type="submit" value="Post" id="submit_anonymous" name ="submit_anonymous">Post Comment</button>
+                </form>
+                <?php else: ?>
+                 <!--form for logged-in users-->
+                 <form method="post" action="index.php">
+                   <!-- Hidden input for the quote primary key. -->
+                   <input type="hidden" id="id" name="id" value="<?= $moviepage['Id'] ?>">
+                   <label for="comment">Post a comment</label><br>
+                   <textarea id="comment" name="comment" rows="10" cols="100"></textarea>
+                   <br><br> 
+
+                   <?php if(isset($inputError)):?>
+                   <span class="error"><?= $inputError?></span><br>
+                   <?php endif ?>
+
+                   <button type="submit" value="Post" id="submit_logged-in" name ="submit_logged-in">Post Comment</button>
+
+                   <?php if($_SESSION['isAdmin'] == 1 && !empty($comments)): ?>
+                    <button><a href="pageUpdate.php?id=<?= $moviepage['Id']?>">Moderate Comment</a></button>
+                   <?php endif ?>
+                </form>
+                <?php endif ?>
+
+        <?php elseif(isset($_SESSION['username'])): ?>
+         <form method="post" action="index.php">
+        <label for="movieListSort">Sort Movies List by:</label>
+        <select name="movieListSort" id="moviesListSort">
+            <option value="Title" selected >Title</option>
+            <option value="Date-Created">Date Created</option>
+            <option value="Release-Date" >Movie Release Date</option>
+        </select>
+        <button type="submit" name="submit" id="submit">Submit</button>
+
+        <?php if(isset($selectError)):?>
+            <span class="error"><?= $selectError?></span>
+        <?php endif?>
+      </form>
+  
+      <p><b>Movies sorted by <?= $movieListSort?></b></p>
+      <?php foreach($movies as $movie): ?>
+            <div>
+                <?php
+                //select image query to get all page images
+                $homeimageQuery = "SELECT * FROM images WHERE Movie_ID = :id";
+                $homeimageStatement = $db->prepare($homeimageQuery);
+                $homeimageStatement->bindValue(':id', $movie['Id'], PDO::PARAM_INT);
+                $homeimageStatement->execute(); 
+                //fetch all images  and store in array
+                $Homeimages = $homeimageStatement->fetchAll();
+                ?>
+                <?php if(!empty($Homeimages)): ?>
+                    <img src="Image_Uploads/<?=$Homeimages[0]['name']?>" alt="<?=$movie['Name']?>">
+                    <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
+                    <p class="content"><?=$movie['Description']?></p>
+                    <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
+                <?php else:?>
+                    <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
+                    <p class="content"><?=$movie['Description']?></p>
+                    <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
+                <?php endif ?>
+            </div>    
+        <?php endforeach ?>
+
+
+        <?php else: ?>
+            <form method="post" action="index.php">
+                <label for="genre">Sort By Category:</label>
+                <select name="genre" id="genre">
+                    <option value = "">All Categories</option>
+                    <option value="1">Adventure</option>
+                    <option value="2">Action</option>
+                    <option value="3">Sci-fi</option>
+                    <option value="4">Horror</option>
+                    <option value="5">Comedy</option>
+                    <option value="6">Drama</option>
+                    <option value="7">Fantasy</option>
+                    <option value="8">Mystery</option>
+                    <option value="9">Romance</option>
+                </select>
+
+                <button type="submit" name="submit" id="submit">Submit</button>
+            </form>
+            <!-- if title field is empty or has,display error message--> 
+            <?php if(isset($genreError)): ?>
+            <h3><?php echo $genreError ?></h3>
             <?php endif ?>
+
+            <?php foreach($movies as $movie): ?>
+                <div>
+                    <?php
+                    //select image query to get all page images
+                    $homeimageQuery = "SELECT * FROM images WHERE Movie_ID = :id";
+                    $homeimageStatement = $db->prepare($homeimageQuery);
+                    $homeimageStatement->bindValue(':id', $movie['Id'], PDO::PARAM_INT);
+                    $homeimageStatement->execute(); 
+                    //fetch all images  and store in array
+                    $Homeimages = $homeimageStatement->fetchAll();
+                    ?>
+                    <?php if(!empty($Homeimages)): ?>
+                        <img src="Image_Uploads/<?=$Homeimages[0]['name']?>" alt="<?=$movie['Name']?>">
+                        <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
+                        <p class="content"><?=$movie['Description']?></p>
+                        <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
+                    <?php else:?>
+                        <h3><a href="index.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
+                        <p class="content"><?=$movie['Description']?></p>
+                        <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
+                    <?php endif ?>
+                </div>    
+            <?php endforeach ?>
+        <?php endif ?>
 
              
 
