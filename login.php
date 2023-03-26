@@ -76,6 +76,8 @@ if($_POST){
 </head>
 
 <body>
+	<div class="block">
+		<?php include("header.php")?>
 	<h1>Login</h1>
 	<div>
 		 <?php if(isset($loginError)):?>
@@ -106,7 +108,7 @@ if($_POST){
 
 	<p>Don't have an Account?<a href="registration.php">Create Account</a></p>
 
-
+</div>
 
 </body>
 </html>
