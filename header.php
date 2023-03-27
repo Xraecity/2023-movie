@@ -7,6 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Header nav</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
        <nav>
@@ -36,7 +37,7 @@
                 
                 <?php if(isset($_SESSION['username'])): ?>
                 <li><a href="pageAdministration.php"><?= $_SESSION['username']?></a></li>
-                <button><a href="logout.php">Log out</a></button>
+                <li><a href="logout.php">Log out</a></li>
 
                 <?php else:?>
                     <li><a href="login.php">Login</a></li>

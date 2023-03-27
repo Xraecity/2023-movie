@@ -139,11 +139,13 @@ $genres = $genreStatement->fetchAll();
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Administration page</title>
+	<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-	<div class="block">
 	<?php include("header.php")?>
+	<div class="block">
+	
 	<div>
 		<h2>Page Administration</h2>
 		
@@ -155,7 +157,7 @@ $genres = $genreStatement->fetchAll();
 	
     
     <h2>Movies List</h2>
-    <button><a href="pageCreate.php">Add Movie</a></button>
+    <button><a href="pageCreate.php">Add Movie</a></button><br><br>
     <!--sort movies list by title, creation date or release date-->
     <form method="post" action="pageAdministration.php">
     	<label for="movieListSort">Sort Movies List by:</label>
@@ -164,7 +166,7 @@ $genres = $genreStatement->fetchAll();
 		    <option value="Date-Created">Date Created</option>
 		    <option value="Release-Date" >Movie Release Date</option>
 	    </select>
-	    <button type="submit" name="submit" id="submit">Submit</button>
+	    <button type="submit" name="submit" id="submit">Submit</button><br>
 
 	    <?php if(isset($selectError)):?>
 	    	<span class="error"><?= $selectError?></span>
@@ -176,7 +178,7 @@ $genres = $genreStatement->fetchAll();
 
     <ul>
     	<?php foreach($movies as $movie): ?>
-    		<li><?= $movie['Name']?>
+    		<li class="lists"><?= $movie['Name']?>
     			<button><a = href="pageUpdate.php?id=<?= $movie['Id']?>">Update</a></button>
     			<button onclick="return confirm('Are you sure you want to delete?')"><a = href="pageDelete.php?id=<?= $movie['Id']?>">Delete</a></button>
     		</li>
@@ -191,7 +193,7 @@ $genres = $genreStatement->fetchAll();
 
     <ul>
     	<?php foreach($genres as $genre): ?>
-    		<li><?= $genre['Name']?>
+    		<li class="lists"><?= $genre['Name']?>
     			<button><a = href="updateCategory.php?id=<?= $genre['ID']?>">Update</a></button>
     		</li>
     	<?php endforeach ?>
@@ -209,7 +211,7 @@ $genres = $genreStatement->fetchAll();
 
     <ul>
     	<?php foreach($users as $user): ?>
-    		<li>
+    		<li class="lists">
     			<p>User_ID:  <?=$user['ID']?></p>
     			<p>Username:  <?=$user['Username']?></p>
     			<p>Email: <?= $user['Email']?></p>

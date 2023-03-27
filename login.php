@@ -73,11 +73,13 @@ if($_POST){
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Login page</title>
+	<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+	<?php include("header.php")?>
 	<div class="block">
-		<?php include("header.php")?>
+		
 	<h1>Login</h1>
 	<div>
 		 <?php if(isset($loginError)):?>

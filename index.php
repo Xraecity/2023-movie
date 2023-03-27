@@ -263,13 +263,14 @@ if($_POST){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="styles.css">
     <title>Welcome to my Movies CMS</title>
 </head>
 <body>
     <!-- Remember that alternative syntax is good and html inside php is bad -->
+      <?php include("header.php")?>
     <div class="block">
-        <?php include("header.php")?>
+      
 
         <?php if($_GET):?>
                <h3><?= $moviepage['Name'] ?></h3>
@@ -348,7 +349,7 @@ if($_POST){
                 <?php endif ?>
 
         <?php elseif(isset($_SESSION['username'])): ?>
-         <form method="post" action="index.php">
+         <form id="home" method="post" action="index.php">
         <label for="movieListSort">Sort Movies List by:</label>
         <select name="movieListSort" id="moviesListSort">
             <option value="Title" selected >Title</option>
@@ -362,9 +363,9 @@ if($_POST){
         <?php endif?>
       </form>
   
-      <p><b>Movies sorted by <?= $movieListSort?></b></p>
+      <p id="homeTitle"><b>Movies sorted by <?= $movieListSort?></b></p>
       <?php foreach($movies as $movie): ?>
-            <div>
+            <div class="movie">
                 <?php
                 //select image query to get all page images
                 $homeimageQuery = "SELECT * FROM images WHERE Movie_ID = :id";
@@ -389,7 +390,7 @@ if($_POST){
 
 
         <?php else: ?>
-            <form method="post" action="index.php">
+            <form id="home" method="post" action="index.php">
                 <label for="genre">Sort By Category:</label>
                 <select name="genre" id="genre">
                     <option value = "">All Categories</option>
@@ -412,7 +413,7 @@ if($_POST){
             <?php endif ?>
 
             <?php foreach($movies as $movie): ?>
-                <div>
+                <div class="movie">
                     <?php
                     //select image query to get all page images
                     $homeimageQuery = "SELECT * FROM images WHERE Movie_ID = :id";
@@ -432,6 +433,7 @@ if($_POST){
                         <p class="content"><?=$movie['Description']?></p>
                         <button ><a  href="index.php?id=<?= $movie['Id']?>">View Movie</a></button>
                     <?php endif ?>
+
                 </div>    
             <?php endforeach ?>
         <?php endif ?>

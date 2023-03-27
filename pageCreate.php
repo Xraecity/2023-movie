@@ -203,13 +203,14 @@ if($_POST ){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="styles.css">
     <title>Movies CMS</title>
 </head>
 <body>
     <!-- Remember that alternative syntax is good and html inside php is bad -->
+      <?php include("header.php")?>
      <div class="block">
-           <?php include("header.php")?>
+         
 
             <h2>Add a New Movie</h2>
 

@@ -259,11 +259,13 @@ if($_POST && !empty($_POST['update'])){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies CMS</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Remember that alternative syntax is good and html inside php is bad -->
+      <?php include("header.php")?>
      <div class="block">
-          <?php include("header.php")?>
+        
 
             <h2>Update Movie</h2>
 

@@ -90,11 +90,13 @@ if($_POST){
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Create New Genre</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <div class="block">
     <?php include("header.php")?>
+    <div class="block">
+    
 	<form method="post" action="createCategory.php">
 
         <label for="genre">Genre</label><br>

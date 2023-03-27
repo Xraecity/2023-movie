@@ -147,9 +147,12 @@ if($_POST){
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Registration page</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+    <?php include("header.php")?>
+    <div class="block">
 	<form method="post" action="registration.php">
 
         <label for="username">Username</label><br>
@@ -192,6 +195,7 @@ if($_POST){
 		<button type="submit" value="Register" id="register">Register</button>	
 	</form>
 	<p>Already having an account?<a href="login.php">  Login Here!</a></p>
+</div>
 
 
 
