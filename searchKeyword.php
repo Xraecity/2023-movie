@@ -257,7 +257,7 @@ function truncate($text) {
     let genre = select.value; // get the selected value
     var query = searchKeyword.value; // get the search query
     let xhr = new XMLHttpRequest(); // create the AJAX object
-    xhr.onload = function() {
+    xhr.onreadystatechange = function() {
       if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
         document.getElementById('results').innerHTML = xhr.responseText; // update the search results
       }
