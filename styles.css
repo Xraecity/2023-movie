@@ -7,85 +7,16 @@
 
 ********************/
 
-
-html,body,section, p, header,footer,div,article,aside{
-    margin: 0;
-    padding: 0;
-    box-sizing:border-box;
-}
-body{
-    font-family: Montserrat;
-     background-color: whitesmoke;
-
+body nav.navbar .navbar-nav .nav-item .nav-link:hover{
+    background-color: maroon;
 }
 
-a{
-    text-decoration: none;
-}
 
-nav{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #311432;
-    color: #fff;
-}
-nav ul{
-    margin: 0;
-    padding: 0;
-    display: flex;
-}
-nav ul li {
-    list-style: none;
-}
-nav ul li a{
-    text-decoration: none;
-    color: #fff;
-    padding: 1.5rem;
-    font-size: 20px;
-    font-weight: bold;
-    display: block;
-}
- nav h1 a{
-    font-size: 25px;
-    margin: 10px;
-    font-weight: bold;
-    color: #fff;
- }
- nav form {
-    margin-top: 23px;
- }
 
- nav form select, nav form button{
-    height: 30px;
- }
- nav form input{
-    height: 25px;
- }
-  nav form label {
-     font-size: 20px;
-    font-weight: bold;
-  }
 
-  .block{
-   
-    width: 95%;
-    margin: 10px auto;
-  }
 
-  form#home label{
-    font-size: 20px;
-  }
-  p#homeTitle{
-    font-size: 25px;
-    margin-top: 5px;
-  }
 
- div.movie{
-      margin-top:20px;
- }
-  
-  li.lists{
-    margin-top: 15px;
-  }
+
+
+
 

@@ -1,5 +1,4 @@
 <?php
-
 require('connect.php');
 session_start();
 
@@ -101,7 +100,7 @@ else{
 		$movies = $statement->fetchAll();
 
 		if(empty($movies)){
-		$inputError = "No movie found";
+		echo("<p>No movie found</p>");
 	    }
        $genreNameQuery = "SELECT Name FROM genres WHERE id =:id";
       $genreNameStatement = $db->prepare($genreNameQuery);
@@ -122,8 +121,8 @@ function truncate($text) {
     return $text;
 }
 
-?>
 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -134,60 +133,9 @@ function truncate($text) {
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+      <script type="text/javascript" href="movies.js"></script>
 </head>
-<body >
-	 <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient py-3">
-   <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="index.php">Movies CMS</a>
-    <?php if(isset($_SESSION['username'])): ?>
-    <a class="navbar-brand fw-bold" href="pageAdministration.php"> <?= $_SESSION['username']?></a>
-<?php endif ?>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" aria-current="page" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="movies.php">Movies</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="contact.php">Contact us</a>
-        </li>
-
-        <?php if(isset($_SESSION['username'])): ?>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="logout.php">Log Out</a>
-        </li>
-        <?php else:  ?>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="login.php">Login</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="registration.php">Sign Up</a>
-        </li>
-         <?php endif ?>
-
-      
-      </ul>
-      <form class="d-flex" action="searchKeyword.php" method="POST">
-        <input class="form-control input-lg me-2" type="search" placeholder="Search Movies" aria-label="Search" id="searchKeyword" name="searchKeyword" value="<?php echo $keywordName?>"> 
-         <select name="genre" id="genre" class="form-select form-select-sm  me-2 " aria-label="Default select" >
-            <option value = "">All Genres</option>
-           <?php  foreach($genres as $genre):?>
-            <option value="<?=$genre['ID']?>"><?=$genre['Name']?></option>
-           <?php endforeach?>
-        </select>  
-        <button class="btn btn-danger mx-2" type="submit">Search</button>
-        <button  onClick="resetForm()" class="btn btn-danger" type="submit" name="reset" id="reset">Reset</button>
-      </form>
-    </div>
-  </div>
-</nav>
-
-
+<body>
 	
 	<div id="results" class="container mb-3 py-3">
     <?php if(empty($keywordName) && isset($genreName)): ?>
@@ -244,29 +192,6 @@ function truncate($text) {
 	    <?php endif ?>
      
 	</div>
-
-  <script>
-    function resetForm(){
-      document.getElementById('searchKeyword').value = "";
-      document.getElementById('genre').selectedIndex = 0;
-     }
-  let select = document.getElementById('genre');
-  let searchKeyword = document.getElementById('searchKeyword');
-   console.log(document.getElementById("results"));
-  select.addEventListener('change', function() {
-    let genre = select.value; // get the selected value
-    var query = searchKeyword.value; // get the search query
-    let xhr = new XMLHttpRequest(); // create the AJAX object
-    xhr.onload = function() {
-      if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200){
-        document.getElementById('results').innerHTML = xhr.responseText; // update the search results
-      }
-    };
-    xhr.open('POST', 'data.php', true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.send('genre=' + genre + '&searchKeyword=' + query); // send the selected category to the server
-  });
-</script>
 
 </body>
 </html>
