@@ -8,7 +8,7 @@
 ********************/
 
 body nav.navbar .navbar-nav .nav-item .nav-link:hover{
-    background-color: maroon;
+    background-color: dodgerblue !important;
 }
 
 

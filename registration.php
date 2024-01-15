@@ -149,72 +149,11 @@ if($_POST){
 
 ?>
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Registration page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-
-<body>
-       <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient py-3">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="index.php">Movies CMS</a>
-    <?php if(isset($_SESSION['username'])): ?>
-    <a class="navbar-brand fw-bold" href="pageAdministration.php"> <?= $_SESSION['username']?></a>
-<?php endif ?>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" aria-current="page" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="movies.php">Movies</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="contact.php">Contact us</a>
-        </li>
-
-        <?php if(isset($_SESSION['username'])): ?>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="logout.php">Log Out</a>
-        </li>
-        <?php else:  ?>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="login.php">Login</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="registration.php">Sign Up</a>
-        </li>
-         <?php endif ?>
-
-      
-      </ul>
-      <form class="d-flex" id="searchForm" action="searchKeyword.php" method="POST">
-        <input class="form-control input-lg me-2" type="search" placeholder="Search Movies" aria-label="Search" id="searchKeyword" name="searchKeyword"> 
-         <select name="genre" id="genre" class="form-select form-select-sm  me-2 " aria-label="Default select">
-            <option value = "">All Genres</option>
-           <?php  foreach($genres as $genre):?>
-            <option value="<?=$genre['ID']?>"><?=$genre['Name']?></option>
-           <?php endforeach?>
-        </select>  
-        <button class="btn btn-danger" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
+<?php include 'nav.php'; ?>
     <div class="container">
-    <div class="container border border-2 rounded-5 border-danger mt-5 shadow-lg mb-3 px-3">
+    <div class="container border border-2 rounded-5 border-primary mt-5 shadow-lg mb-3 px-3">
 
-    <h1 class="text-danger text-center fw-bold mt-4">Registration Form</h1>
+    <h1 class="text-primary text-center fw-bold mt-4">Registration Form</h1>
    
 	<form method="post" action="registration.php">
         <div class=" form-floating mb-3 mt-3">
@@ -226,7 +165,7 @@ if($_POST){
 
         <!-- if useranme field has error,display error message--> 
         <?php if(isset($usernameError)): ?>
-            <span class="error text-danger"><?= $usernameError ?></span><br>
+            <span class="error text-primary"><?= $usernameError ?></span><br>
         <?php endif ?>
 
 
@@ -239,7 +178,7 @@ if($_POST){
 
         <!-- if email field has error,display error message--> 
         <?php if(isset($emailError)): ?>
-            <span class="error text-danger"><?= $emailError ?></span><br>
+            <span class="error text-primary"><?= $emailError ?></span><br>
         <?php endif ?>
 
         <div class="form-floating mb-3 mt-3">
@@ -249,7 +188,7 @@ if($_POST){
 
         <!-- if password field has error,display error message--> 
         <?php if(isset($passwordError1)): ?>
-        <span class="error text-danger"><?= $passwordError1 ?></span><br>
+        <span class="error text-primary"><?= $passwordError1 ?></span><br>
         <?php endif ?>
 
         <div class="form-floating mb-3 mt-3">
@@ -259,16 +198,16 @@ if($_POST){
 
         <!-- if password field has error,display error message--> 
         <?php if(isset($passwordError2)): ?>
-        <span class="error text-danger"><?= $passwordError2 ?></span><br>
+        <span class="error text-primary"><?= $passwordError2 ?></span><br>
         <?php endif ?>
 
         <div>Password must contain one digit from 1 to 9, one lowercase letter, one uppercase letter, one special character, no space, and it must be a minimum of 8 characters long.</div>
         <br>
 
-		<button type="submit" class ="btn btn-danger fs-5" value="Register" id="register">Register</button>	
+		<button type="submit" class ="btn btn-primary fs-5" value="Register" id="register">Register</button>	
 	</form><br>
    
-	<p>Already have an account? <a href="login.php" class="btn btn-danger mb-3">Login Here!</a></p>
+	<p>Already have an account? <a href="login.php" class="btn btn-primary mb-3">Login Here!</a></p>
 </div>
 </div>
 

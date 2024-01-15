@@ -149,7 +149,7 @@ if($_POST){
        //if a comment is added by a user that's not logged in 
  if( $_POST && !empty($_POST['submit_anonymous'])){
     if(!empty($_POST['comment'])){
-            //  Sanitize user input to escape HTML entities and filter out dangerous characters.
+            //  Sanitize user input to escape HTML entities and filter out primaryous characters.
             $comment1 = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $id1 = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
 
@@ -208,7 +208,7 @@ if($_POST){
     //if a comment is added by a logged-in or admin user 
  if($_POST && !empty($_POST['submit_logged-in'])){
      if(!empty($_POST['comment'])){
-            //  Sanitize user input to escape HTML entities and filter out dangerous characters.
+            //  Sanitize user input to escape HTML entities and filter out primaryous characters.
             $comment2 = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $name2 = $_SESSION['username'];
             $id2 = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
@@ -243,76 +243,17 @@ function truncate($text) {
 ?>
 
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-     <link rel="stylesheet" href="styles.css">
-    <title>Welcome to Movies world</title>
-</head>
-<body>
+<title>movies</title>
     <!-- Remember that alternative syntax is good and html inside php is bad -->
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient py-3">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="index.php">Movies CMS</a>
-    <?php if(isset($_SESSION['username'])): ?>
-    <a class="navbar-brand fw-bold" href="pageAdministration.php"> <?= $_SESSION['username']?></a>
-<?php endif ?>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" aria-current="page" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="movies.php">Movies</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="contact.php">Contact us</a>
-        </li>
-
-        <?php if(isset($_SESSION['username'])): ?>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="logout.php">Log Out</a>
-        </li>
-        <?php else:  ?>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="login.php">Login</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="registration.php">Sign Up</a>
-        </li>
-         <?php endif ?>
-
-      
-      </ul>
-      <form class="d-flex" id="searchForm" action="searchKeyword.php" method="POST">
-        <input class="form-control input-lg me-2" type="search" placeholder="Search Movies" aria-label="Search" id="searchKeyword" name="searchKeyword"> 
-         <select name="genre" id="genre" class="form-select form-select-sm  me-2 " aria-label="Default select">
-            <option value = "">All Genres</option>
-           <?php  foreach($genres as $genre):?>
-            <option value="<?=$genre['ID']?>"><?=$genre['Name']?></option>
-           <?php endforeach?>
-        </select>  
-        <button class="btn btn-danger" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
+      <?php include 'nav.php';?>
     <div class="container mb-3 py-3 bg-white shadow-lg rounded-2 my-3">
         <?php if($_GET):?>
-               <h3 class="text-danger fw-bold"><?= $moviepage['Name'] ?></h3>
+               <h3 class="text-primary fw-bold"><?= $moviepage['Name'] ?></h3>
                <?php if(isset($_SESSION['username']) && $_SESSION['isAdmin'] == 1): ?>
                   <a class="btn btn-secondary mb-2" href="pageUpdate.php?id=<?= $moviepage['Id'] ?>">Edit Movie</a>
 
                 <?php elseif(isset($_SESSION['username']) && ($_SESSION['id'] === $moviepage['User_ID'])): ?>
-                    <a class="btn btn-danger mb-2" href="pageUpdate.php?id=<?= $moviepage['Id'] ?>">Edit Movie</a> 
+                    <a class="btn btn-primary mb-2" href="pageUpdate.php?id=<?= $moviepage['Id'] ?>">Edit Movie</a> 
                 <?php endif ?>
                 
                 <h5>Genre: <?=$genreName['Name']?></h5>
@@ -368,10 +309,10 @@ function truncate($text) {
                    
 
                    <?php if(isset($inputError)):?>
-                   <span class="text-danger"><?= $inputError?></span><br>
+                   <span class="text-primary"><?= $inputError?></span><br>
                    <?php endif ?>
 
-                   <button  class=" btn btn-danger mb-2" type="submit" value="Post" id="submit_anonymous" name ="submit_anonymous">Post Comment</button>
+                   <button  class=" btn btn-primary mb-2" type="submit" value="Post" id="submit_anonymous" name ="submit_anonymous">Post Comment</button>
                    </form>
                   <?php else: ?>
                  <!--form for logged-in users-->
@@ -384,23 +325,23 @@ function truncate($text) {
                    <br><br> 
 
                    <?php if(isset($inputError)):?>
-                   <span class="text-danger"><?= $inputError?></span><br>
+                   <span class="text-primary"><?= $inputError?></span><br>
                    <?php endif ?>
 
-                   <button class="btn btn-danger mb-2" type="submit" value="Post" id="submit_logged-in" name ="submit_logged-in">Post Comment</button>
+                   <button class="btn btn-primary mb-2" type="submit" value="Post" id="submit_logged-in" name ="submit_logged-in">Post Comment</button>
 
                    <?php if($_SESSION['isAdmin'] == 1 && !empty($comments)): ?>
-                    <a  class="btn btn-danger mb-2" href="pageUpdate.php?id=<?= $moviepage['Id']?>">Moderate Comment</a>
+                    <a  class="btn btn-primary mb-2" href="pageUpdate.php?id=<?= $moviepage['Id']?>">Moderate Comment</a>
                    <?php endif ?>
                 </form>
                 <?php endif ?>
 
       
         <?php elseif(isset($_SESSION['username'])): ?>
-            <div class="container bg-white border border-danger border-2 my-3 py-2 rounded-2">
+            <div class="container bg-white border border-primary border-2 my-3 py-2 rounded-2">
          <form id="home" method="post" action="movies.php" class="row g-3">
             <div class="col-auto">
-            <label for="movieListSort" class="form-label mt-2 fw-bold">Sort Movies List by:</label>
+            <label for="moviesListSort" class="form-label mt-2 fw-bold">Sort Movies List by:</label>
         </div>
            <div class="col-auto">
             <select name="movieListSort" id="moviesListSort" class="form-select" aria-label="Default select example">
@@ -410,7 +351,7 @@ function truncate($text) {
             </select>
         </div>
            <div class="col-auto">
-            <button type="submit" name="submit" id="submit" class="btn btn-danger mb-2">Submit</button>
+            <button type="submit" name="submit" id="submit" class="btn btn-primary mb-2">sort</button>
         </div>
 
 
@@ -438,20 +379,19 @@ function truncate($text) {
         <div class="card h-100">
           <img src="Image_Uploads/<?=$Homeimages[0]['name']?>" class="card-img-top" alt="<?=$movie['Name']?>">
           <div class="card-body">
-            <h3 class="card-title text-danger"><?= $movie['Name'] ?></h3>
+            <h3 class="card-title text-primary"><?= $movie['Name'] ?></h3>
             <p class="card-text"><?= truncate($movie['Description'])?>...</p>
-             <a class= "btn btn-danger mt-3 mb-2"href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
+             <a class= "btn btn-primary mt-3 mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
           </div>
         </div>
       </div>
         <?php else:?>
           <div class="col pb-3">
             <div class="card">
-              <img src="" class="card-img-top" alt="">
               <div class="card-body">
-                <h3 class="card-title text-danger"><?= $movie['Name'] ?></h3>
+                <h3 class="card-title text-primary"><?= $movie['Name'] ?></h3>
                 <p class="card-text"><?= truncate($movie['Description'])?>...</p>
-                <a  class="btn btn-danger mt-3  mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
+                <a  class="btn btn-primary mt-3  mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
               </div>
             </div>
         </div>
@@ -479,20 +419,19 @@ function truncate($text) {
         <div class="card h-100">
           <img src="Image_Uploads/<?=$Homeimages[0]['name']?>" class="card-img-top" alt="<?=$movie['Name']?>">
           <div class="card-body">
-            <h3 class="card-title text-danger"><?= $movie['Name'] ?></h3>
+            <h3 class="card-title text-primary"><?= $movie['Name'] ?></h3>
             <p class="card-text"><?= truncate($movie['Description'])?>...</p>
-             <a class="btn btn-danger mt-3  mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
+             <a class="btn btn-primary mt-3  mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
           </div>
         </div>
       </div>
         <?php else:?>
           <div class="col pb-3">
             <div class="card">
-              <img src="" class="card-img-top" alt="">
               <div class="card-body">
-                <h3 class="card-title text-danger"><?= $movie['Name'] ?></h3>
+                <h3 class="card-title text-primary"><?= $movie['Name'] ?></h3>
                 <p class="card-text"><?= truncate($movie['Description'])?>...</p>
-                <a class="btn btn-danger mt-3 mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
+                <a class="btn btn-primary mt-3 mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
               </div>
             </div>
         </div>

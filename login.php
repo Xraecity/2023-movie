@@ -75,81 +75,19 @@ if($_POST){
 	}
 ?>
 
+<?php include 'nav.php'; ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Login page</title>
-	 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="styles.css">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-
-<body>
-	
-	 <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient py-3">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="index.php">Movies CMS</a>
-    <?php if(isset($_SESSION['username'])): ?>
-    <a class="navbar-brand fw-bold" href="pageAdministration.php"> <?= $_SESSION['username']?></a>
-<?php endif ?>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" aria-current="page" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="movies.php">Movies</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="contact.php">Contact us</a>
-        </li>
-
-        <?php if(isset($_SESSION['username'])): ?>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="logout.php">Log Out</a>
-        </li>
-        <?php else:  ?>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="login.php">Login</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="registration.php">Sign Up</a>
-        </li>
-         <?php endif ?>
-
-      
-      </ul>
-        <form class="d-flex" id="searchForm" action="searchKeyword.php" method="POST">
-        <input class="form-control input-lg me-2" type="search" placeholder="Search Movies" aria-label="Search" id="searchKeyword" name="searchKeyword"> 
-         <select name="genre" id="genre" class="form-select form-select-sm  me-2 " aria-label="Default select">
-            <option value = "">All Genres</option>
-           <?php  foreach($genres as $genre):?>
-            <option value="<?=$genre['ID']?>"><?=$genre['Name']?></option>
-           <?php endforeach?>
-        </select>  
-        <button class="btn btn-danger" type="submit">Search</button>
-      </form>
-
-    </div>
-  </div>
-</nav>
 	<div class="container">
-	<div class="container border border-2 rounded-5 border-danger mt-5 shadow-lg">
-	<h1 class="text-center  text-danger fw-bold mt-4">Login Form</h1>
+	<div class="container border border-2 rounded-5 border-primary mt-5 shadow-lg">
+	<h1 class="text-center  text-primary fw-bold mt-4">Login Form</h1>
 
 		<div>
 		 <?php if(isset($loginError)):?>
-        	<span class="text-danger"><?= $loginError?></span><br>
+        	<span class="text-primary"><?= $loginError?></span><br>
         <?php endif ?>
 
         <?php if(isset($emptyfieldError)):?>
-        	<span class="text-danger"><?= $emptyfieldError?></span><br>
+        	<span class="text-primary"><?= $emptyfieldError?></span><br>
         <?php endif ?>
 
         <?php if(isset($successMessage)):?>
@@ -166,9 +104,9 @@ if($_POST){
 		  <label for="password">Password</label>
 		</div>
 
-		<button type="submit"  class ="btn btn-danger fs-5 " value="Login" id="login">	Login</button>
+		<button type="submit"  class ="btn btn-primary fs-5 " value="Login" id="login">	Login</button>
 	</form><br>
-	<p>Don't have an Account? <a href="registration.php " class=" btn btn-danger mb-3">Create Account</a></p>
+	<p>Don't have an Account? <a href="registration.php " class=" btn btn-primary mb-3">Create Account</a></p>
 </div>
 
 </div>

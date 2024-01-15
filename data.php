@@ -1,4 +1,13 @@
 <?php
+
+/*******w******** 
+    
+    Name: Maryam Ayemlo Gambo
+    Date: March 20, 2023
+    Description: This page searches movies using genre and serachInput.
+
+****************/
+
 require('connect.php');
 session_start();
 
@@ -139,17 +148,17 @@ function truncate($text) {
 	
 	<div id="results" class="container mb-3 py-3">
     <?php if(empty($keywordName) && isset($genreName)): ?>
-     <h2 class="text-danger fw-bold">Movies in <?= $genreName['Name']?></h2>
+     <h2 class="text-primary fw-bold">Movies in <?= $genreName['Name']?></h2>
    <?php elseif(empty($keywordName) && empty($genreName)): ?>
-   <h2 class="text-danger fw-bold">All Genres</h2>
+   <h2 class="text-primary fw-bold">All Genres</h2>
     <?php elseif(isset($keywordName) && empty($genreName)): ?>
-      <h2 class="text-danger fw-bold">'<?= $keywordName?>' in All Genres</h2>
+      <h2 class="text-primary fw-bold">'<?= $keywordName?>' in All Genres</h2>
     <?php elseif(isset($keywordName) && isset($genreName)): ?>
-       <h2 class="text-danger fw-bold">'<?= $keywordName?>' in <?= $genreName['Name'] ?></h2>
+       <h2 class="text-primary fw-bold">'<?= $keywordName?>' in <?= $genreName['Name'] ?></h2>
     <?php endif?>
 
 	<?php if(empty($movies)): ?>
-		<h2 class="mt-3 text-danger fw-bold"> <?= $inputError ?></h2>
+		<h2 class="mt-3 text-primary fw-bold"> <?= $inputError ?></h2>
 	<?php else:?>
 	<div  class="row row-cols-1 row-cols-md-3 g-4 my-3 shadow-lg">
      <?php foreach($movies as $movie): ?>
@@ -168,9 +177,9 @@ function truncate($text) {
         <div class="card h-100">
           <img src="Image_Uploads/<?=$Homeimages[0]['name']?>" class="card-img-top" alt="<?=$movie['Name']?>">
           <div class="card-body">
-            <h3 class="card-title"><a  class="text-danger" href="movies.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
+            <h3 class="card-title"><a  class="text-primary" href="movies.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
             <p class="card-text"><?= truncate($movie['Description'])?>...</p>
-             <a class= "btn btn-danger mt-3 mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
+             <a class= "btn btn-primary mt-3 mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
           </div>
         </div>
       </div>
@@ -179,9 +188,9 @@ function truncate($text) {
             <div class="card">
               <img src="" class="card-img-top" alt="">
               <div class="card-body">
-                <h3 class="card-title"><a class="text-danger" href="movies.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
+                <h3 class="card-title"><a class="text-primary" href="movies.php?id=<?= $movie['Id']?>"><?= $movie['Name'] ?></a></h3>
                 <p class="card-text"><?= truncate($movie['Description'])?>...</p>
-                <a  class="btn btn-danger mt-3  mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
+                <a  class="btn btn-primary mt-3  mb-2" href="movies.php?id=<?= $movie['Id']?>">View Movie</a>
               </div>
             </div>
         </div>

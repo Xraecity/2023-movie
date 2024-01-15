@@ -1,24 +1,32 @@
 <?php
+/*******w******** 
+    
+    Name: Maryam Ayemlo Gambo
+    Date: March 20, 2023
+    Description: This page contains the contact form and validations.
+
+****************/
+
 require('connect.php');
 session_start();
 
-// Show PHP errors (Disable in production)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// // Show PHP errors (Disable in production)
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
-// Include library PHPMailer
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\SMTP;
+// // Include library PHPMailer
+// use PHPMailer\PHPMailer\PHPMailer;
+// use PHPMailer\PHPMailer\Exception;
+// use PHPMailer\PHPMailer\SMTP;
 
-require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
+// require 'PHPMailer/src/Exception.php';
+// require 'PHPMailer/src/PHPMailer.php';
+// require 'PHPMailer/src/SMTP.php';
 
 
-// Start
-$mail = new PHPMailer(true);
+// // Start
+// $mail = new PHPMailer(true);
 
 //select all categories
 // Build the parameterized SQL query and bind to the above sanitized values.
@@ -117,71 +125,11 @@ if($_POST){
 
  ?>
 
+<?php include 'nav.php'; ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Contact Us</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-	 <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient py-3">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="index.php">Movies CMS</a>
-    <?php if(isset($_SESSION['username'])): ?>
-    <a class="navbar-brand fw-bold" href="pageAdministration.php"> <?= $_SESSION['username']?></a>
-<?php endif ?>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" aria-current="page" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="movies.php">Movies</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="contact.php">Contact us</a>
-        </li>
-
-        <?php if(isset($_SESSION['username'])): ?>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="logout.php">Log Out</a>
-        </li>
-        <?php else:  ?>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="login.php">Login</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="registration.php">Sign Up</a>
-        </li>
-         <?php endif ?>
-
-      
-      </ul>
-        <form class="d-flex" id="searchForm" action="searchKeyword.php" method="POST">
-        <input class="form-control input-lg me-2" type="search" placeholder="Search Movies" aria-label="Search" id="searchKeyword" name="searchKeyword"> 
-         <select name="genre" id="genre" class="form-select form-select-sm  me-2 " aria-label="Default select">
-            <option value = "">All Genres</option>
-           <?php  foreach($genres as $genre):?>
-            <option value="<?=$genre['ID']?>"><?=$genre['Name']?></option>
-           <?php endforeach?>
-        </select>  
-        <button class="btn btn-danger" type="submit">Search</button>
-      </form>
-
-    </div>
-  </div>
-</nav>
 	 <div class="container">
-	 	<div class="container border border-2 rounded-5 border-danger mt-5 shadow-lg">
-	 <h1 class="text-center  text-danger fw-bold mt-4">Contact Us</h1>
+	 	<div class="container border border-2 rounded-5 border-primary mt-5 shadow-lg">
+	 <h1 class="text-center  text-primary fw-bold mt-4">Contact Us</h1>
 		<form method="post" action="contact.php">
 			<?php if(isset($messageSuccess)):?>
 	        <span class="fw-bold"><?= $messageSuccess?></span><br>
@@ -194,7 +142,7 @@ if($_POST){
 
 	        <!-- if email field has error,display error message--> 
 	        <?php if(isset($emailError)): ?>
-	            <span class="error text-danger"><?= $emailError ?></span><br>
+	            <span class="error text-primary"><?= $emailError ?></span><br>
 	        <?php endif ?>
 
 	        <div class=" form-floating mb-3 mt-3">
@@ -204,7 +152,7 @@ if($_POST){
 
 	        <!-- if email field has error,display error message--> 
 	        <?php if(isset($subjectError)): ?>
-	            <span class="error text-danger"><?= $subjectError ?></span><br>
+	            <span class="error text-primary"><?= $subjectError ?></span><br>
 	        <?php endif ?>
 
 		   <div class="form-floating mb-3 mt-3">
@@ -213,10 +161,10 @@ if($_POST){
 		    </div>
 
 	        <?php if(isset($messageError)):?>
-	        <span class="error text-danger"><?= $messageError?></span><br>
+	        <span class="error text-primary"><?= $messageError?></span><br>
 	        <?php endif ?>
 
-	        <button type="submit" class="btn btn-danger fs-5 mb-3" value="Post" id="contact" name="contact">Submit</button>
+	        <button type="submit" class="btn btn-primary fs-5 mb-3" value="Post" id="contact" name="contact">Submit</button>
 			
 		</form>
 </div>

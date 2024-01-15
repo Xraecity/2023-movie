@@ -9,8 +9,8 @@
 ****************/
 
 require('connect.php');
-require '\xampp\htdocs\WD2\challenges\Challenge7_Maryam_Gambo\php-image-resize-master\lib\ImageResize.php';
-require '\xampp\htdocs\WD2\challenges\Challenge7_Maryam_Gambo\php-image-resize-master\lib\ImageResizeException.php';
+require 'php-image-resize-master\lib\ImageResize.php';
+require 'php-image-resize-master\lib\ImageResizeException.php';
 
 use \Gumlet\ImageResize;
 session_start();
@@ -193,6 +193,7 @@ if($_POST && !empty($_POST['update'])){
                         $imageInvalid = false;
                         $image1 = new ImageResize($temporary_path);
                         $image1->resizeToWidth(400);
+                        $image1->resizeToHeight(600);
                         $image1->save($image_storage_folder);
                         echo("file uploaded successfully");
                     }
@@ -245,77 +246,14 @@ if($_POST && !empty($_POST['update'])){
    }    
 ?>
 
+<?php include 'nav.php'; ?>
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movies CMS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-    <!-- Remember that alternative syntax is good and html inside php is bad -->
-     <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient py-3">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="index.php">Movies CMS</a>
-    <?php if(isset($_SESSION['username'])): ?>
-    <a class="navbar-brand fw-bold" href="pageAdministration.php"> <?= $_SESSION['username']?></a>
-<?php endif ?>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" aria-current="page" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="movies.php">Movies</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="contact.php">Contact us</a>
-        </li>
-
-        <?php if(isset($_SESSION['username'])): ?>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="logout.php">Log Out</a>
-        </li>
-        <?php else:  ?>
-        <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="login.php">Login</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link fw-bold text-white" href="registration.php">Sign Up</a>
-        </li>
-         <?php endif ?>
-
-      
-      </ul>
-        <form class="d-flex" id="searchForm" action="searchKeyword.php" method="POST">
-        <input class="form-control input-lg me-2" type="search" placeholder="Search Movies" aria-label="Search" id="searchKeyword" name="searchKeyword"> 
-         <select name="genre" id="genre" class="form-select form-select-sm  me-2 " aria-label="Default select">
-            <option value = "">All Genres</option>
-           <?php  foreach($genres as $genre):?>
-            <option value="<?=$genre['ID']?>"><?=$genre['Name']?></option>
-           <?php endforeach?>
-        </select>  
-        <button class="btn btn-danger" type="submit">Search</button>
-      </form>
-
-    </div>
-  </div>
-</nav>
-      
      <div class="container">
-        <div class="container border border-2 rounded-5 border-danger mt-5 shadow-lg px-3">
+        <div class="container border border-2 rounded-5 border-primary mt-5 shadow-lg px-3">
         
 
-            <h2 class="text-center  text-danger fw-bold mt-4">Update Movie</h2>
+            <h2 class="text-center  text-primary fw-bold mt-4">Update Movie</h2>
   
             <form method="post" enctype='multipart/form-data'>
                 <!-- Hidden input for the quote primary key. -->
@@ -326,7 +264,7 @@ if($_POST && !empty($_POST['update'])){
 
                 <!-- if title field is empty or has,display error message--> 
                 <?php if(isset($titleError)): ?>
-                <span class="error text-danger"><?php echo $titleError ?></span><br>
+                <span class="error text-primary"><?php echo $titleError ?></span><br>
                 <?php endif ?>
 
                 <label for="genre2" class="form-label fs-5 fw-bold">Genre</label><br>
@@ -343,7 +281,7 @@ if($_POST && !empty($_POST['update'])){
 
                 <!--if genre field is empty or has error,display error message--> 
                 <?php if(isset($genreError)): ?>
-                <span class="error text-danger"><?php echo $genreError ?></span><br>
+                <span class="error text-primary"><?php echo $genreError ?></span><br>
                 <?php endif ?>
 
                 <label for="description" class="form-label fs-5 fw-bold">Description</label><br>
@@ -352,7 +290,7 @@ if($_POST && !empty($_POST['update'])){
 
                 <!-- if description field is empty or has error,display error message--> 
                 <?php if(isset($descriptionError)): ?>
-                <span class="error text-danger"><?php echo $descriptionError ?></span><br>
+                <span class="error text-primary"><?php echo $descriptionError ?></span><br>
                 <?php endif ?>
 
                 <label for="releaseDate" class="form-label fs-5 fw-bold">Release Date</label>
@@ -360,11 +298,11 @@ if($_POST && !empty($_POST['update'])){
 
                 <!-- if Release date field is empty or has,display error message--> 
                 <?php if(isset($releaseDateError)): ?>
-                <span class="error text-danger"><?php echo $releaseDateError ?></span><br>
+                <span class="error text-primary"><?php echo $releaseDateError ?></span><br>
                 <?php endif ?>
 
                 <?php if(!empty($images)):?>
-                    <h3 class="text-danger">Images</h3>
+                    <h3 class="text-primary">Images</h3>
                     <ul class="list-group">
                     <?php foreach($images as $image):?>
                         <li class="list-group-item">
@@ -384,14 +322,14 @@ if($_POST && !empty($_POST['update'])){
 
                  <!-- if filetype has error,display error message--> 
                 <?php if(isset($imageError)): ?>
-                <span class="error text-danger"><?php echo $imageError ?></span><br>
+                <span class="error text-primary"><?php echo $imageError ?></span><br>
                 <?php endif ?>
 
 
                 
                 <?php if($_SESSION['isAdmin'] == 1):?>
                     <?php if(!empty($comments)):?>
-                        <h3 class="text-danger">Comments</h3>
+                        <h3 class="text-primary">Comments</h3>
                         <ul class="list-group">
                         <?php foreach($comments as $comment):?>
                         <li class="list-group-item">
@@ -405,13 +343,13 @@ if($_POST && !empty($_POST['update'])){
                     <?php endif ?> 
 
                 <?php endif ?>
-                <button type="submit" value="update" id="submit"  class="btn btn-danger fs-5 my-3" name="update">Update Movie</button>
+                <button type="submit" value="update" id="submit"  class="btn btn-primary fs-5 my-3" name="update">Update Movie</button>
 
                 
                 
             </form>
 
-            <a href="pageAdministration.php" class=" btn btn-danger mb-3">Go back to Admin page</a>
+            <a href="pageAdministration.php" class=" btn btn-primary mb-3">Go back to Admin page</a>
  
         </div>
         
